@@ -1,0 +1,56 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+
+
+.mat-slider-ticks{
+  height: 6px !important
+}
+.mat-slider-ticks-container{
+  height: 6px !important
+}
+
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+}
+
+/* You can add global styles to this file, and also import other style files */
+.w3-card, .w3-card-2 {
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+}
+.w3-ul {
+  list-style-type: none;
+  margin-bottom: 20px;
+  padding: 0
+}
+.w3-ul li {
+  padding: 8px 16px;
+  border-bottom: 1px solid #ddd;
+}
+
+
+body {
+  background-color: #f8f8f8;
+}
+
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 50px;
+  height: 50px;
+  margin: -25px 0 0 -25px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 1s linear infinite;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #555;
+  border-radius: 50%;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

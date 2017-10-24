@@ -1,0 +1,5 @@
+<form class="form" [formGroup]="createModelForm" class="w3-card-2">
+  <app-ui-input label="Name" placeholder="Enter name...." [control]="createModelForm.get('name')"></app-ui-input>
+  <app-ui-button [disabled]="!createModelForm.valid"  text="Create Model" (click)="createModel()"></app-ui-button>
+</form>
+

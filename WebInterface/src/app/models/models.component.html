@@ -1,0 +1,171 @@
+<md-card style="padding: 0px">
+  <div id="menuContainer">
+    <button id="menuButton" md-icon-button [mdMenuTriggerFor]="menu">
+        <md-icon>more_horizontal</md-icon>
+    </button>
+    <md-menu #menu="mdMenu">
+      <button md-menu-item (click)="openSelectModelDialog()">
+        <md-icon>find_in_page</md-icon>
+        <span>Select Model</span>
+      </button>
+      <button md-menu-item (click)="openCreateModelDialog()">
+        <md-icon>note_add</md-icon>
+        <span>Create Model</span>
+      </button>
+    </md-menu>
+  </div>
+  <!-- <md-sidenav-container class="example-sidenav-fab-container">
+    <md-sidenav #sidenav mode="side" opened="false">
+    </md-sidenav> -->
+    <!-- <app-ui-button text="New Model" (click)="addModel()"></app-ui-button> -->
+    <!-- <a [routerLink]="[{outlets: { modal : 'createModel'}}]" routerLinkActive="active" [queryParams]="{routerLink: '/models'}" >
+        <app-ui-button text="New Model" class="sidebarListButton"></app-ui-button>
+    </a>
+    <app-ui-button text="Select Model" (click)="openSelectModelDialog()"></app-ui-button>     -->
+    <div *ngIf="!(selectedModel$ | async)?.selectedModel" class="placeHolder">
+      Please select or create a Model
+    </div>
+    <md-card id="selectedModel" >
+      <div *ngIf="(selectedModel$ | async) as selectedModelState">
+        <form *ngIf="selectedModelState.selectedModel as selectedModel" class="form" [formGroup]="editModel" >
+          <fieldset disabled="{{selectedModel.isHistorical ? 'disabled': null}}" style="padding: 0px; border: 0px;">
+            <h1>Evaluation History</h1>
+
+            <md-tab-group class="demo-tab-group" id="evaluationTabGroup">
+                <md-tab label="Status List">
+                  <md-table #table [dataSource]="evaluationDataSource">
+                      <!--- Note that these columns can be defined in any order.
+                            The actual rendered columns are set as a property on the row definition" -->
+                  
+                      <ng-container mdColumnDef="worker">
+                        <md-header-cell *mdHeaderCellDef> worker </md-header-cell>
+                        <md-cell *mdCellDef="let element"> {{element.worker}} </md-cell>
+                      </ng-container>
+                  
+                      <ng-container mdColumnDef="status">
+                        <md-header-cell *mdHeaderCellDef> status </md-header-cell>
+                        <md-cell *mdCellDef="let element"> {{element.status}} </md-cell>
+                      </ng-container>
+                  
+                      <ng-container mdColumnDef="epochs">
+                        <md-header-cell *mdHeaderCellDef> epochs </md-header-cell>
+                        <md-cell *mdCellDef="let element"> {{element.epochs}} </md-cell>
+                      </ng-container>
+                
+                      <ng-container mdColumnDef="batch_size">
+                        <md-header-cell *mdHeaderCellDef> batch_size </md-header-cell>
+                        <md-cell *mdCellDef="let element"> {{element.batch_size}} </md-cell>
+                      </ng-container>
+                  
+                      <md-header-row *mdHeaderRowDef="evaluationDisplayedColumns"></md-header-row>
+                      <md-row *mdRowDef="let row; columns: evaluationDisplayedColumns;"></md-row>
+                  </md-table>            
+                </md-tab>
+                <md-tab label="Metrics">
+                  <google-chart [data]="metricsChartData"></google-chart>
+                </md-tab>
+            </md-tab-group>
+            <h1>Model Workspace</h1>
+            <div *ngIf="(sliderModels$ | async) as models" id="dateSlider">
+                <label >Model History</label>
+                <!-- <input type="range" id="rangeControlledByDate" value="selectedModelState.sliderCurrentIndex" step="1" min="0" max="{{models.length - 1}}" (change)="onDateSliderInput($event, models)" class="slider"/> -->
+                <input type="text"  id="dateControlledByRange" value="{{dateTextForIndex(models, selectedModelState.sliderCurrentIndex)}}" disabled/>
+    
+                <md-slider
+                    id="historySlider"
+                    [disabled]="disabled"
+                    [invert]="false"
+                    [max]="models.length - 1"
+                    [min]="0"
+                    [step]="1"
+                    [thumb-label]="false"
+                    [tick-interval]="1"
+                    [value]="selectedModelState.sliderCurrentIndex"
+                    (change)="onDateSliderInput($event, models)">
+                </md-slider>
+            </div>
+            <div class="w3-container">
+              <app-ui-button [disabled]="!editModel.valid || selectedModel.isHistorical"  text="Update Model" (click)="updateModel(selectedModel)"></app-ui-button>
+              <app-ui-button [disabled]="!selectedModel || selectedModel.isHistorical" text="Delete Model" (click)="removeModel(selectedModel)"></app-ui-button>
+              <app-ui-button [disabled]="!selectedModel || selectedModel.isHistorical" text="Create Evaluation" (click)="createEvaluation(selectedModel)" ></app-ui-button>
+            </div>
+
+            <!-- selectedModelTabGroup model -->
+            <div *ngIf="sliderSelectedModel else selectedModelTabGroup">
+              sliderSelectedModel!
+            </div>
+            <ng-template #selectedModelTabGroup>
+              <md-tab-group *ngIf="selectedModel" class="demo-tab-group" id="selectedModelTabGroup">
+                
+                <md-tab label="Settings">
+                  <h3>Settings</h3>
+                  <app-ui-input [value]="selectedModel?.name" label="Name" [control]="editModel.get('name')"></app-ui-input>
+                  <app-ui-select [value]="selectedModel?.modelType" label="Model Type" name="ModelType" [control]="editModel.get('modelType')" [options]="modelTypes"></app-ui-select>
+                  <app-ui-select [value]="selectedModel?.optimizer" label="Optimizer" name="optimizer" [control]="editModel.get('optimizer')" [options]="optimizers"></app-ui-select>
+                  <app-ui-select [value]="selectedModel?.metrics" label="Metrics" name="metrics" [control]="editModel.get('metrics')" [options]="metrics"></app-ui-select>
+                  <app-ui-select [value]="selectedModel?.loss" label="Loss" name="loss" [control]="editModel.get('loss')" [options]="losses"></app-ui-select>
+                  <app-ui-input [value]="selectedModel?.epochs" placeholder="0" type="number" label="Epochs" [control]="editModel.get('epochs')"></app-ui-input>
+                  <app-ui-input [value]="selectedModel?.batch_size" placeholder="0" type="number" label="Batch Size" [control]="editModel.get('batch_size')"></app-ui-input>
+                  
+                  <md-expansion-panel>
+                    <md-expansion-panel-header>
+                      <md-panel-title>
+                        Cross Validation
+                      </md-panel-title>
+                      <md-panel-description>
+                        Configure type and number of splits
+                      </md-panel-description>
+                    </md-expansion-panel-header>
+                    <app-ui-select [value]="selectedModel?.cross_validation?.validator" label="Validator" name="validator" [control]="crossValidationFormGroup.get('validator')" [options]="crossValidationTypes"></app-ui-select>                                        
+                    <app-ui-input [value]="selectedModel?.cross_validation?.n_splits" placeholder="" type="number" label="Number of Splits" [control]="crossValidationFormGroup.get('n_splits')"></app-ui-input>
+                    <app-ui-select [value]="selectedModel?.cross_validation?.shuffle" label="Shuffle?" name="shuffle" [control]="crossValidationFormGroup.get('shuffle')" [options]="[true, false]"></app-ui-select>  
+                  </md-expansion-panel>
+                </md-tab>
+
+                <md-tab label="Dataset" class="w3-container">
+                  <h3>Dataset</h3>
+                  <a *ngIf="!selectedModel.isHistorical" [routerLink]="[{outlets: { modal : 'selectDataset'}}]" routerLinkActive="active">Select Dataset</a>
+                  <div *ngIf="selectedModelDataset(selectedModel)">
+                    <app-ui-input value="{{selectedModelDataset(selectedModel).name}}" label="Dataset Name" readonly="readonly"></app-ui-input>
+                    <app-ui-select [multiValue]="selectedModel?.inputColumns" label="Input Columns" name="inputColumns" [control]="editModel.get('inputColumns')" [options]="objectKeys(selectedModelDataset(selectedModel).data[0])" multiple="true"></app-ui-select>       
+                    <app-ui-select [multiValue]="selectedModel?.outputColumns" label="Output Columns" name="outputColumns" [control]="editModel.get('outputColumns')" [options]="objectKeys(selectedModelDataset(selectedModel).data[0])" multiple="true"></app-ui-select>
+                    <app-ui-select [value]="selectedModel?.one_hot_encode_output" label="One Hot Encode Output?" name="one_hot_encode_output" [control]="editModel.get('one_hot_encode_output')" [options]="[true, false]"></app-ui-select>
+                    <app-ui-select [value]="modelHasEstimator(selectedModel, 'StandardScaler')" label="Scale Features?" name="StandardScaler" [control]="estimatorsFormGroup.get('StandardScaler')" [options]="[true, false]"></app-ui-select>  
+                  </div>
+                </md-tab>
+                
+                <md-tab label="Layers" class="w3-container"  *ngIf="selectedModelDataset(selectedModel)">
+                  <h3>Layers</h3>
+                  <md-tab-group class="demo-tab-group">
+                    <md-tab *ngFor="let layer of selectedModel?.layers; let i = index" class="w3-container" label="{{'Layer '+(i+1)}}">
+                      <app-ui-button [disabled]="selectedModel.isHistorical" text="Remove Layer" (click)="removeLayer(layer, i);"></app-ui-button>
+                      <app-ui-select [value]="layer.layerType" label="Layer Type" name="ModelType" [control]="layerControlForIndex(i, layer).get('modelType')" [options]="LAYER_TYPES" [changeFunction]="onLayerTypeChange(i, layer)"></app-ui-select>
+                      <div *ngFor="let argument of LAYER_ARGUMENTS[layer.layerType]">
+                        <div [ngSwitch]="typeOf(argument.type)">
+                          <div *ngSwitchCase="'number'">
+                            <app-ui-input [value]="layer.arguments[argument.name]" label="{{argument.name}}" type="number" [control]="layerControlForIndex(i, layer).get(argument.name)" [changeFunction]="onArgumentChange(i, layer, layerControlForIndex(i, layer), argument.name)"></app-ui-input>
+                          </div>
+                          <div *ngSwitchCase="'boolean'">
+                            <app-ui-select [value]="layer.arguments[argument.name]" label="{{argument.name}}" name="{{argument.name}}" [control]="layerControlForIndex(i, layer).get(argument.name)" [options]="[true, false]" [changeFunction]="onArgumentChange(i, layer, layerControlForIndex(i, layer), argument.name)"></app-ui-select>
+                          </div>
+                          <div *ngSwitchCase="'object'">
+                            <app-ui-select [value]="layer.arguments[argument.name]" label="{{argument.name}}" name="{{argument.name}}" [control]="layerControlForIndex(i, layer).get(argument.name)" [options]="argument.type" [changeFunction]="onArgumentChange(i, layer, layerControlForIndex(i, layer), argument.name)"></app-ui-select>
+                          </div>
+                          <div *ngSwitchDefault>
+                            <p>ngSwitchDefault {{typeOf(argument.type)}}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </md-tab>
+                  </md-tab-group>
+                  <app-ui-button [disabled]="selectedModel.isHistorical" text="New Layer" (click)="newLayer(selectedModel)"></app-ui-button>
+                </md-tab>
+
+              </md-tab-group>
+            </ng-template>
+          </fieldset>
+        </form>
+      </div>
+    </md-card>
+  <!-- </md-sidenav-container> -->
+</md-card>

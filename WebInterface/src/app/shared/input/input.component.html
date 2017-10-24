@@ -1,0 +1,7 @@
+<div class="field" [ngClass]="{'error': control.errors && (control.dirty || control.touched)}">
+  <label *ngIf="label">{{label}}</label>
+  <input [value]="value || ''" type="{{type || 'text'}}" 
+          [placeholder]="placeholder" [formControl]="control" 
+          [readonly]="readonly" 
+          (change)="onChange(this.value)">
+</div>

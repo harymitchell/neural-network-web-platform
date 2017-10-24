@@ -1,0 +1,9 @@
+<app-ui-modal [routerLinkOnClose]="routerLink">
+  <app-modal-header>Select Dataset</app-modal-header>
+  <app-modal-body>
+    <ul class="w3-ul w3-card-2" style="width:50%">
+      <li *ngFor="let item of datasets$ | async"
+          (click)="selectDataset(item)">{{item.name}}</li>
+    </ul>
+  </app-modal-body>
+</app-ui-modal>

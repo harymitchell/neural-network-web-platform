@@ -1,0 +1,11 @@
+<app-ui-modal [routerLinkOnClose]="routerLink">
+  <app-modal-header>Select Dataset</app-modal-header>
+  <app-modal-body>
+    <form class="form" [formGroup]="createEvaluationForm" class="w3-card-2">
+        <h2>Create Evaluation</h2>
+        <app-ui-input placeholder="0" type="number" label="Epochs" [control]="createEvaluationForm.get('epochs')"></app-ui-input>
+        <app-ui-input placeholder="0" type="number" label="Batch Size" [control]="createEvaluationForm.get('batch_size')"></app-ui-input>
+        <app-ui-button text="Submit Evaluation" (click)="createEvaluation();"></app-ui-button>
+    </form>
+  </app-modal-body>
+</app-ui-modal>

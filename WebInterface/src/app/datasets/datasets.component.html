@@ -1,0 +1,70 @@
+
+<div class="w3-container">
+  <h2>Datasets</h2>
+  <!-- <ul class="w3-ul w3-card-2" style="width:50%">
+    <li *ngFor="let item of datasets$ | async"
+        (click)="selectDataset(item)">{{item.name}}</li>
+  </ul> -->
+
+  <div class="example-container mat-elevation-z8">
+    <md-table #table [dataSource]="datasetsDataSource">    
+      
+      <ng-container mdColumnDef="name">
+        <md-header-cell *mdHeaderCellDef> name </md-header-cell>
+        <md-cell *mdCellDef="let element"> {{element.name}} </md-cell>
+      </ng-container>
+
+      <ng-container mdColumnDef="createdAt">
+          <md-header-cell *mdHeaderCellDef> createdAt </md-header-cell>
+          <md-cell *mdCellDef="let element"> {{element.createdAt}} </md-cell>
+      </ng-container>
+  
+      <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
+      <md-row *mdRowDef="let row; columns: displayedColumns; " (click)="selectDataset(row)"></md-row>
+    </md-table>
+  </div>
+</div>
+
+<div class="w3-container">
+  <h2>New Dataset</h2>
+  <form class="form" [formGroup]="form" class="w3-card-2">
+    <app-ui-input label="Name" placeholder="Enter name...." [control]="form.get('name')"></app-ui-input>
+    <input type="file" (change)="fileChange($event)" placeholder="Upload data" accept=".csv,.tsv,.data,.txt" >   
+    <app-ui-select [value]="true" label="Has Headers?" name="hasHeaders" [control]="form.get('hasHeaders')" [options]="[true, false]"></app-ui-select>
+    <app-ui-select value="," label="Delimiter" name="delimiter" [control]="form.get('delimiter')" [options]="[',', '|','TAB', 'SPACE', 'auto']"></app-ui-select>   
+    <app-ui-button [disabled]="!form.valid"  text="Add Dataset" (click)="submitDataset()"></app-ui-button>
+  </form>
+</div>
+
+<div class="w3-container" class="w3-card-2" *ngIf="selectedDataset">
+  <h2>Selected Dataset</h2>
+  <!-- <p>{{selectedDataset.name}}</p> -->
+  <form class="form" [formGroup]="editDataset" >
+    <app-ui-input label="Name" [value]="selectedDataset?.name" [control]="editDataset.get('name')"></app-ui-input>
+    <app-ui-button [disabled]="!editDataset.valid"  text="Update Dataset" (click)="updateDataset(selectedDataset)"></app-ui-button>
+    <app-ui-button [disabled]="!selectedDataset" text="Delete Dataset" (click)="removeDataset(selectedDataset)"></app-ui-button>
+
+    <div class="w3-container" *ngIf="selectDataset">
+      <h2>Data</h2>
+      <div class="w3-responsive">
+
+          <div class="example-container mat-elevation-z8" *ngIf="selectedDatasetSource">
+            <md-table #table [dataSource]="selectedDatasetSource">    
+              
+              <ng-container *ngFor="let col of selectedDatasetSourceDisplayedColumns" mdColumnDef="{{col}}">
+                <md-header-cell *mdHeaderCellDef>
+                  <h2>{{col}}</h2>
+                  <app-ui-select [value]="columnDType(selectedDataset, col)" [control]="columnSpecForm.get(col)" [options]="['String', 'Number', 'Boolean']"></app-ui-select>
+                </md-header-cell>
+                <md-cell *mdCellDef="let element"> {{element[col]}} </md-cell>
+              </ng-container>
+          
+              <md-header-row *mdHeaderRowDef="selectedDatasetSourceDisplayedColumns"></md-header-row>
+              <md-row *mdRowDef="let row; columns: selectedDatasetSourceDisplayedColumns;"></md-row>
+            </md-table>
+          </div>
+      </div>   
+    </div>
+  </form>     
+
+</div>

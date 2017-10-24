@@ -1,0 +1,18 @@
+<div class="field" [ngClass]="{'error': control.errors && (control.dirty || control.touched)}">
+  <label *ngIf="label">{{label}}</label>
+  <select 
+      type="text" 
+      [name]="name" 
+      [formControl]="control" 
+      [(ngModel)]="value"
+      (change)="onChange(this.value, this)" 
+      [attr.multiple]="multiple ? multiple: null"
+      id ="selectElement" #selectElement>
+    <option 
+      *ngFor="let option of options" 
+      value="{{option}}">
+      {{option}}
+    </option>    
+  </select>
+</div>
+ 

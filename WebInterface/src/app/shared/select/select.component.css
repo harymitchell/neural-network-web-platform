@@ -1,0 +1,14 @@
+:host select {
+  padding: 8px;
+  display: inline-block;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  width: 50%;
+  margin-bottom: 16px!important;
+}
+
+.field.error > * {
+  background: lightcoral;
+  color: white;
+}
+

@@ -1,0 +1,33 @@
+<div>
+    <div *ngIf="!currentUser">
+        <h1>Angular2 Social login</h1>
+        <button (click)="signIn('google')">google</button>
+        <!-- <button (click)="signIn('linkedin')">linkedIn</button>
+        <button (click)="signIn('facebook')">facebook</button> -->
+        <button (click)="logout()">logout</button>
+    </div>
+    <!-- <div *ngIf="currentUser">
+        <table>
+            <tr>
+            <td>Name:</td>
+            <td>{{currentUser.name}}</td>
+            </tr>
+            <tr>
+            <td>Email</td>
+            <td>{{currentUser.email}}</td>
+            </tr>
+            <tr>
+            <td>UID</td>
+            <td>{{currentUser.uid}}</td>
+            </tr>
+            <tr>
+            <td>Provider</td>
+            <td>{{currentUser.provider}}</td>
+            </tr>
+            <tr>
+            <td>Image</td>
+            <td>{{currentUser.image}}</td>
+            </tr>
+        </table>
+    </div> -->
+</div>
