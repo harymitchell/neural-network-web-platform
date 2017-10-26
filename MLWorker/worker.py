@@ -23,6 +23,7 @@ class Worker (object):
     
     def run(self):
         """Run application"""
+        print ("starting worker node")
         while True:
             self.run_once()
             time.sleep(SLEEP_TIME)
@@ -76,7 +77,6 @@ class Worker (object):
         })
             
 if __name__ == '__main__':
-
     mongo_uri = "mongodb://{username}:{password}@{host}:{port}/{database}".format(
             username=MONGO_USERNAME, password=MONGO_PASSWORD, host=MONGO_HOST, port=MONGO_PORT, database=MONGO_DBNAME)
     worker = Worker(mongo_uri=mongo_uri, db=MONGO_DBNAME, worker_id=WORKER_ID)
