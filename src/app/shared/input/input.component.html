@@ -1,7 +1,12 @@
-<div class="field" [ngClass]="{'error': control.errors && (control.dirty || control.touched)}">
-  <label *ngIf="label">{{label}}</label>
-  <input [value]="value || ''" type="{{type || 'text'}}" 
-          [placeholder]="placeholder" [formControl]="control" 
+<mat-form-field>
+  <input matInput [value]="value || ''" type="{{type || 'text'}}" 
+          [placeholder]="label" [formControl]="control" 
           [readonly]="readonly" 
           (change)="onChange(this.value)">
-</div>
+  <mat-error *ngIf="control.errors">{{errorMessage(control.errors)}}</mat-error>
+</mat-form-field>
+
+
+<!-- <label *ngIf="label">{{label}}</label> -->
+<!-- <div class="field" [ngClass]="{'error': control.errors && (control.dirty || control.touched)}"> -->
+<!-- </div> -->

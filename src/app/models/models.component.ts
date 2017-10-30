@@ -31,7 +31,7 @@ import { EVALUATION_GET, EVALUATION_ADD, EVALUATION_ADD_SUCCESS,
 import { EvaluationEffects } from '../store/evaluation/evaluation.effects';
 import { IEvaluation } from '../store/evaluation/evaluation.reducer';
 
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
 
 import {SelectModelComponent} from './selectModel/selectModel.component';
 import {CreateModelComponent} from '../shared/createModel/createModel.component';
@@ -237,7 +237,8 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
               private router: Router,
               private route: ActivatedRoute,
               private cdRef: ChangeDetectorRef,
-              public dialog: MatDialog) {
+              public dialog: MatDialog,
+              public snackBar: MatSnackBar) {
     this.models$ = store.select('model');
     this.datasets$ = store.select('dataset');
     this.selectedModel$ = store.select('selectedModel');
@@ -682,6 +683,12 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
         return est.name === estimator;
       });
     }
+  }
+
+  openSnackBar(message: string, action: string, duration: number) {
+    this.snackBar.open(message, action, {
+      duration: duration,
+    });
   }
 
 }

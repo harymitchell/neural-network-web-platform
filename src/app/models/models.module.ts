@@ -13,7 +13,7 @@ import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
 import { MatCardModule, MatTableModule, MatButtonModule, MatProgressSpinnerModule,
   MatSidenavModule, MatDialogModule, MatTabsModule, MatIconModule, MatSliderModule,
-  MatMenuModule, MatExpansionModule } from '@angular/material';
+  MatMenuModule, MatExpansionModule, MatSnackBarModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -32,6 +32,7 @@ import { MatCardModule, MatTableModule, MatButtonModule, MatProgressSpinnerModul
     MatSliderModule,
     MatMenuModule,
     MatExpansionModule,
+    MatSnackBarModule,
 
     Ng2GoogleChartsModule,
     RouterModule.forChild(routes)

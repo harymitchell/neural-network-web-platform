@@ -1,22 +1,22 @@
-<md-card style="padding: 0px">
+<mat-card style="padding: 0px">
   <div id="menuContainer">
-    <button id="menuButton" md-icon-button [mdMenuTriggerFor]="menu">
-        <md-icon>more_horizontal</md-icon>
+    <button id="menuButton" mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_horizontal</mat-icon>
     </button>
-    <md-menu #menu="mdMenu">
-      <button md-menu-item (click)="openSelectModelDialog()">
-        <md-icon>find_in_page</md-icon>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="openSelectModelDialog()">
+        <mat-icon>find_in_page</mat-icon>
         <span>Select Model</span>
       </button>
-      <button md-menu-item (click)="openCreateModelDialog()">
-        <md-icon>note_add</md-icon>
+      <button mat-menu-item (click)="openCreateModelDialog()">
+        <mat-icon>note_add</mat-icon>
         <span>Create Model</span>
       </button>
-    </md-menu>
+    </mat-menu>
   </div>
-  <!-- <md-sidenav-container class="example-sidenav-fab-container">
-    <md-sidenav #sidenav mode="side" opened="false">
-    </md-sidenav> -->
+  <!-- <mat-sidenav-container class="example-sidenav-fab-container">
+    <mat-sidenav #sidenav mode="side" opened="false">
+    </mat-sidenav> -->
     <!-- <app-ui-button text="New Model" (click)="addModel()"></app-ui-button> -->
     <!-- <a [routerLink]="[{outlets: { modal : 'createModel'}}]" routerLinkActive="active" [queryParams]="{routerLink: '/models'}" >
         <app-ui-button text="New Model" class="sidebarListButton"></app-ui-button>
@@ -25,53 +25,53 @@
     <div *ngIf="!(selectedModel$ | async)?.selectedModel" class="placeHolder">
       Please select or create a Model
     </div>
-    <md-card id="selectedModel" >
+    <mat-card id="selectedModel" >
       <div *ngIf="(selectedModel$ | async) as selectedModelState">
         <form *ngIf="selectedModelState.selectedModel as selectedModel" class="form" [formGroup]="editModel" >
           <fieldset disabled="{{selectedModel.isHistorical ? 'disabled': null}}" style="padding: 0px; border: 0px;">
             <h1>Evaluation History</h1>
 
-            <md-tab-group class="demo-tab-group" id="evaluationTabGroup">
-                <md-tab label="Status List">
-                  <md-table #table [dataSource]="evaluationDataSource">
+            <mat-tab-group class="demo-tab-group" id="evaluationTabGroup">
+                <mat-tab label="Status List">
+                  <mat-table #table [dataSource]="evaluationDataSource">
                       <!--- Note that these columns can be defined in any order.
                             The actual rendered columns are set as a property on the row definition" -->
                   
-                      <ng-container mdColumnDef="worker">
-                        <md-header-cell *mdHeaderCellDef> worker </md-header-cell>
-                        <md-cell *mdCellDef="let element"> {{element.worker}} </md-cell>
+                      <ng-container matColumnDef="worker">
+                        <mat-header-cell *matHeaderCellDef> worker </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.worker}} </mat-cell>
                       </ng-container>
                   
-                      <ng-container mdColumnDef="status">
-                        <md-header-cell *mdHeaderCellDef> status </md-header-cell>
-                        <md-cell *mdCellDef="let element"> {{element.status}} </md-cell>
+                      <ng-container matColumnDef="status">
+                        <mat-header-cell *matHeaderCellDef> status </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.status}} </mat-cell>
                       </ng-container>
                   
-                      <ng-container mdColumnDef="epochs">
-                        <md-header-cell *mdHeaderCellDef> epochs </md-header-cell>
-                        <md-cell *mdCellDef="let element"> {{element.epochs}} </md-cell>
+                      <ng-container matColumnDef="epochs">
+                        <mat-header-cell *matHeaderCellDef> epochs </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.epochs}} </mat-cell>
                       </ng-container>
                 
-                      <ng-container mdColumnDef="batch_size">
-                        <md-header-cell *mdHeaderCellDef> batch_size </md-header-cell>
-                        <md-cell *mdCellDef="let element"> {{element.batch_size}} </md-cell>
+                      <ng-container matColumnDef="batch_size">
+                        <mat-header-cell *matHeaderCellDef> batch_size </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.batch_size}} </mat-cell>
                       </ng-container>
                   
-                      <md-header-row *mdHeaderRowDef="evaluationDisplayedColumns"></md-header-row>
-                      <md-row *mdRowDef="let row; columns: evaluationDisplayedColumns;"></md-row>
-                  </md-table>            
-                </md-tab>
-                <md-tab label="Metrics">
+                      <mat-header-row *matHeaderRowDef="evaluationDisplayedColumns"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: evaluationDisplayedColumns;"></mat-row>
+                  </mat-table>            
+                </mat-tab>
+                <mat-tab label="Metrics">
                   <google-chart [data]="metricsChartData"></google-chart>
-                </md-tab>
-            </md-tab-group>
+                </mat-tab>
+            </mat-tab-group>
             <h1>Model Workspace</h1>
             <div *ngIf="(sliderModels$ | async) as models" id="dateSlider">
                 <label >Model History</label>
                 <!-- <input type="range" id="rangeControlledByDate" value="selectedModelState.sliderCurrentIndex" step="1" min="0" max="{{models.length - 1}}" (change)="onDateSliderInput($event, models)" class="slider"/> -->
                 <input type="text"  id="dateControlledByRange" value="{{dateTextForIndex(models, selectedModelState.sliderCurrentIndex)}}" disabled/>
     
-                <md-slider
+                <mat-slider
                     id="historySlider"
                     [disabled]="disabled"
                     [invert]="false"
@@ -82,7 +82,7 @@
                     [tick-interval]="1"
                     [value]="selectedModelState.sliderCurrentIndex"
                     (change)="onDateSliderInput($event, models)">
-                </md-slider>
+                </mat-slider>
             </div>
             <div class="w3-container">
               <app-ui-button [disabled]="!editModel.valid || selectedModel.isHistorical"  text="Update Model" (click)="updateModel(selectedModel)"></app-ui-button>
@@ -95,9 +95,9 @@
               sliderSelectedModel!
             </div>
             <ng-template #selectedModelTabGroup>
-              <md-tab-group *ngIf="selectedModel" class="demo-tab-group" id="selectedModelTabGroup">
+              <mat-tab-group *ngIf="selectedModel" class="demo-tab-group" id="selectedModelTabGroup">
                 
-                <md-tab label="Settings">
+                <mat-tab label="Settings">
                   <h3>Settings</h3>
                   <app-ui-input [value]="selectedModel?.name" label="Name" [control]="editModel.get('name')"></app-ui-input>
                   <app-ui-select [value]="selectedModel?.modelType" label="Model Type" name="ModelType" [control]="editModel.get('modelType')" [options]="modelTypes"></app-ui-select>
@@ -107,22 +107,22 @@
                   <app-ui-input [value]="selectedModel?.epochs" placeholder="0" type="number" label="Epochs" [control]="editModel.get('epochs')"></app-ui-input>
                   <app-ui-input [value]="selectedModel?.batch_size" placeholder="0" type="number" label="Batch Size" [control]="editModel.get('batch_size')"></app-ui-input>
                   
-                  <md-expansion-panel>
-                    <md-expansion-panel-header>
-                      <md-panel-title>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
                         Cross Validation
-                      </md-panel-title>
-                      <md-panel-description>
+                      </mat-panel-title>
+                      <mat-panel-description>
                         Configure type and number of splits
-                      </md-panel-description>
-                    </md-expansion-panel-header>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
                     <app-ui-select [value]="selectedModel?.cross_validation?.validator" label="Validator" name="validator" [control]="crossValidationFormGroup.get('validator')" [options]="crossValidationTypes"></app-ui-select>                                        
                     <app-ui-input [value]="selectedModel?.cross_validation?.n_splits" placeholder="" type="number" label="Number of Splits" [control]="crossValidationFormGroup.get('n_splits')"></app-ui-input>
                     <app-ui-select [value]="selectedModel?.cross_validation?.shuffle" label="Shuffle?" name="shuffle" [control]="crossValidationFormGroup.get('shuffle')" [options]="[true, false]"></app-ui-select>  
-                  </md-expansion-panel>
-                </md-tab>
+                  </mat-expansion-panel>
+                </mat-tab>
 
-                <md-tab label="Dataset" class="w3-container">
+                <mat-tab label="Dataset" class="w3-container">
                   <h3>Dataset</h3>
                   <a *ngIf="!selectedModel.isHistorical" [routerLink]="[{outlets: { modal : 'selectDataset'}}]" routerLinkActive="active">Select Dataset</a>
                   <div *ngIf="selectedModelDataset(selectedModel)">
@@ -132,12 +132,12 @@
                     <app-ui-select [value]="selectedModel?.one_hot_encode_output" label="One Hot Encode Output?" name="one_hot_encode_output" [control]="editModel.get('one_hot_encode_output')" [options]="[true, false]"></app-ui-select>
                     <app-ui-select [value]="modelHasEstimator(selectedModel, 'StandardScaler')" label="Scale Features?" name="StandardScaler" [control]="estimatorsFormGroup.get('StandardScaler')" [options]="[true, false]"></app-ui-select>  
                   </div>
-                </md-tab>
+                </mat-tab>
                 
-                <md-tab label="Layers" class="w3-container"  *ngIf="selectedModelDataset(selectedModel)">
+                <mat-tab label="Layers" class="w3-container"  *ngIf="selectedModelDataset(selectedModel)">
                   <h3>Layers</h3>
-                  <md-tab-group class="demo-tab-group">
-                    <md-tab *ngFor="let layer of selectedModel?.layers; let i = index" class="w3-container" label="{{'Layer '+(i+1)}}">
+                  <mat-tab-group class="demo-tab-group">
+                    <mat-tab *ngFor="let layer of selectedModel?.layers; let i = index" class="w3-container" label="{{'Layer '+(i+1)}}">
                       <app-ui-button [disabled]="selectedModel.isHistorical" text="Remove Layer" (click)="removeLayer(layer, i);"></app-ui-button>
                       <app-ui-select [value]="layer.layerType" label="Layer Type" name="ModelType" [control]="layerControlForIndex(i, layer).get('modelType')" [options]="LAYER_TYPES" [changeFunction]="onLayerTypeChange(i, layer)"></app-ui-select>
                       <div *ngFor="let argument of LAYER_ARGUMENTS[layer.layerType]">
@@ -156,16 +156,16 @@
                           </div>
                         </div>
                       </div>
-                    </md-tab>
-                  </md-tab-group>
+                    </mat-tab>
+                  </mat-tab-group>
                   <app-ui-button [disabled]="selectedModel.isHistorical" text="New Layer" (click)="newLayer(selectedModel)"></app-ui-button>
-                </md-tab>
+                </mat-tab>
 
-              </md-tab-group>
+              </mat-tab-group>
             </ng-template>
           </fieldset>
         </form>
       </div>
-    </md-card>
-  <!-- </md-sidenav-container> -->
-</md-card>
+    </mat-card>
+  <!-- </mat-sidenav-container> -->
+</mat-card>

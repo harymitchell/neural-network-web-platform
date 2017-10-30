@@ -1,42 +1,42 @@
 
 
-<!-- <md-card>Simple card</md-card> -->
-<!-- <button md-button>Click me!</button>
-<button md-raised-button color="accent">Accent</button>
-<md-spinner></md-spinner> -->
+<!-- <mat-card>Simple card</mat-card> -->
+<!-- <button mat-button>Click me!</button>
+<button mat-raised-button color="accent">Accent</button>
+<mat-spinner></mat-spinner> -->
 
 <div class="example-container mat-elevation-z8">
-  <md-table #table [dataSource]="dataSource">
+  <mat-table #table [dataSource]="dataSource">
 
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
 
     <!-- Position Column -->
-    <ng-container mdColumnDef="worker">
-      <md-header-cell *mdHeaderCellDef> worker </md-header-cell>
-      <md-cell *mdCellDef="let element"> {{element.worker}} </md-cell>
+    <ng-container matColumnDef="worker">
+      <mat-header-cell *matHeaderCellDef> worker </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.worker}} </mat-cell>
     </ng-container>
 
     <!-- Name Column -->
-    <ng-container mdColumnDef="status">
-      <md-header-cell *mdHeaderCellDef> status </md-header-cell>
-      <md-cell *mdCellDef="let element"> {{element.status}} </md-cell>
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef> status </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.status}} </mat-cell>
     </ng-container>
 
     <!-- Weight Column -->
-    <ng-container mdColumnDef="epochs">
-      <md-header-cell *mdHeaderCellDef> epochs </md-header-cell>
-      <md-cell *mdCellDef="let element"> {{element.epochs}} </md-cell>
+    <ng-container matColumnDef="epochs">
+      <mat-header-cell *matHeaderCellDef> epochs </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.epochs}} </mat-cell>
     </ng-container>
 
     <!-- Color Column -->
-    <ng-container mdColumnDef="batch_size">
-      <md-header-cell *mdHeaderCellDef> batch_size </md-header-cell>
-      <md-cell *mdCellDef="let element"> {{element.batch_size}} </md-cell>
+    <ng-container matColumnDef="batch_size">
+      <mat-header-cell *matHeaderCellDef> batch_size </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.batch_size}} </mat-cell>
     </ng-container>
 
-    <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
-    <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
-  </md-table>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
 </div> 
 

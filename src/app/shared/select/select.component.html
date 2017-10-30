@@ -1,4 +1,21 @@
-<div class="field" [ngClass]="{'error': control.errors && (control.dirty || control.touched)}">
+
+<mat-form-field> 
+  <mat-select 
+    name="name"
+    placeholder="{{label}}" 
+    [(ngModel)]="multiValue || value" 
+    [formControl]="control" 
+    [multiple]="multiple" 
+    (change)="onChange(this.value, this)">
+      <mat-option *ngFor="let option of options" [value]="option">{{ option }}</mat-option>
+  </mat-select>
+  <mat-error *ngIf="control.errors">{{errorMessage(control.errors)}}</mat-error>
+
+  <mat-error *ngIf="control.errors">{{errorMessage(control.errors)}}</mat-error>
+</mat-form-field>
+
+
+<!-- <div class="field" [ngClass]="{'error': control.errors && (control.dirty || control.touched)}">
   <label *ngIf="label">{{label}}</label>
   <select 
       type="text" 
@@ -15,4 +32,4 @@
     </option>    
   </select>
 </div>
- 
+  -->

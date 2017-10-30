@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { ValidationErrors } from '@angular/forms';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +21,15 @@ export class InputComponent {
     console.log ('InputComponent onChange')
     if (this.changeFunction){
       this.changeFunction(val);
+    }
+  }
+
+  errorMessage(errors: ValidationErrors): String {
+    const err_keys = Object.keys(errors);
+    if (err_keys.length === 0 ){
+      return null;
+    } else {
+      return err_keys[0];
     }
   }
 }

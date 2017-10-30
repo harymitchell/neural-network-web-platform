@@ -1,4 +1,4 @@
-:host input {
+/* :host input {
   padding: 8px;
   display: inline-block;
   border: none;
@@ -10,5 +10,5 @@
 .field.error > * {
   background: lightcoral;
   color: white;
-}
+} */
 

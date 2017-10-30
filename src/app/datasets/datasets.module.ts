@@ -7,11 +7,12 @@ import { routes } from './datasets.router';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 
-import {MatTableModule} from '@angular/material';
+import {MatTableModule, MatSnackBarModule} from '@angular/material';
 
 @NgModule({
   imports: [
     MatTableModule,
+    MatSnackBarModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

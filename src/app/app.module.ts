@@ -26,7 +26,8 @@ import { CommonModule } from '@angular/common';
 
 import {MatCardModule, MatTableModule, MatButtonModule, MatProgressSpinnerModule,
   MatSidenavModule, MatDialogModule, MatTabsModule, MatIconModule, MatMenuModule,
-  MatExpansionModule} from '@angular/material';
+  MatExpansionModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, 
+  MatSelectModule} from '@angular/material'; 
   
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
   
@@ -50,6 +51,10 @@ import { Ng2GoogleChartsModule } from 'ng2-google-charts';
     MatIconModule,
     MatMenuModule,
     MatExpansionModule,
+    MatSnackBarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
 
     BrowserAnimationsModule,
 

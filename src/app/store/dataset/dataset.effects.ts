@@ -5,11 +5,13 @@ import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/share';
 
 import {
   DATASET_GET, DATASET_ADD, DATASET_REMOVE, DATASET_ADD_COMMENT, DatasetGet, DatasetAdd, DatasetAddFail, DatasetGetFail,
   DatasetGetSuccess, DatasetAddSuccess, DatasetAddComment, DatasetAddCommentFail, DatasetAddCommentSuccess, DatasetRemove, 
-  DatasetRemoveFail, DatasetRemoveSuccess, DatasetUpdateSuccess, DatasetUpdate, DATASET_UPDATE, DATASET_UPDATE_SUCCESS
+  DatasetRemoveFail, DatasetRemoveSuccess, DatasetUpdateSuccess, DatasetUpdate, DATASET_UPDATE, DATASET_UPDATE_SUCCESS,
+  DATASET_ADD_SUCCESS, DATASET_ADD_FAIL, DatasetUpdateFail
 } from './dataset.actions';
 
 @Injectable()
@@ -22,10 +24,11 @@ export class DatasetEffects {
 
       return this.http.get('/api/dataset', action.payload)
         .map((response: Response) => response.json())
-        .catch((error) => Observable.of(new DatasetGetFail(error)))
-        .map((response) => new DatasetGetSuccess(response));
+        .map((response) => new DatasetGetSuccess(response))
+        .catch((error) => Observable.of(new DatasetGetFail(error)));
 
-    });
+    })
+    .share();
 
   @Effect()
   addDataset$ = this.actions$
@@ -34,10 +37,11 @@ export class DatasetEffects {
       console.log ("addDataset"); 
       return this.http.post('/api/dataset', action.payload)
         .map((response: Response) => response.json())
-        .catch((error) => Observable.of(new DatasetAddFail(error)))
-        .map((response) => new DatasetAddSuccess(response));
+        .map((response) => new DatasetAddSuccess(response))
+        .catch((error) => Observable.of(new DatasetAddFail(error)));
 
-    });
+    })
+    .share();
 
 
   @Effect()
@@ -47,22 +51,11 @@ export class DatasetEffects {
       console.log ("updateDataset"); 
       return this.http.put('/api/dataset/' + action._id, action.payload)
         .map((response: Response) => response.json())
-        .catch((error) => Observable.of(new DatasetAddFail(error)))
-        .map((response) => new DatasetUpdateSuccess(response));
+        .map((response) => new DatasetUpdateSuccess(response))
+        .catch((error) => Observable.of(new DatasetUpdateFail(error)));
 
-    });
-
-  @Effect()
-  addDatasetComment$ = this.actions$
-    .ofType(DATASET_ADD_COMMENT)
-    .switchMap((action: DatasetAddComment) => {
-
-      return this.http.post('/api/dataset/' + action.payload.id + '/comment', action.payload.comment)
-        .map((response: Response) => response.json())
-        .catch((error) => Observable.of(new DatasetAddCommentFail(error)))
-        .map((response) => new DatasetAddCommentSuccess(response));
-
-    });
+    })
+    .share();
 
   @Effect()
   removeDataset$ = this.actions$
@@ -71,10 +64,11 @@ export class DatasetEffects {
 
       return this.http.delete('/api/dataset/' + action.payload)
         .map((response: Response) => response.json())
-        .catch((error) => Observable.of(new DatasetRemoveFail(error)))
-        .map((response) => new DatasetRemoveSuccess(response));
+        .map((response) => new DatasetRemoveSuccess(response))
+        .catch((error) => Observable.of(new DatasetRemoveFail(error)));
 
-    });
+    })
+    .share();
 
   constructor(private actions$: Actions, private http: Http) {}
 }

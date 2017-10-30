@@ -15,7 +15,7 @@ import { LoaderComponent } from './loader/loader.component';
 import { CreateEvaluationComponent } from './createEvaluation/createEvaluation.component';
 import { CreateModelComponent } from './createModel/createModel.component';
 import { GoogleChartComponent } from './googleChart/googleChart.component'
-import {MatButtonModule, MatCardModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule} from '@angular/material';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
 @NgModule({
@@ -38,6 +38,9 @@ import { Ng2GoogleChartsModule } from 'ng2-google-charts';
     Ng2GoogleChartsModule,
     MatButtonModule,
     MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
     CommonModule,
     RouterModule,
     FormsModule,

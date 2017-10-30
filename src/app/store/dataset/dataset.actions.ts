@@ -11,6 +11,7 @@ export const DATASET_ADD_SUCCESS = '[Dataset] add new success';
 
 export const DATASET_UPDATE = '[Dataset] update';
 export const DATASET_UPDATE_SUCCESS = '[Dataset] update success';
+export const DATASET_UPDATE_FAIL = '[Dataset] update failed';
 
 export const DATASET_ADD_COMMENT = '[Dataset] add new comment';
 export const DATASET_ADD_COMMENT_FAIL = '[Dataset] add new comment fail';
@@ -68,6 +69,12 @@ export class DatasetUpdate implements Action {
 
 export class DatasetUpdateSuccess implements Action {
   readonly type = DATASET_UPDATE_SUCCESS;
+
+  constructor(public payload: IDataset) {}
+}
+
+export class DatasetUpdateFail implements Action {
+  readonly type = DATASET_UPDATE_FAIL;
 
   constructor(public payload: IDataset) {}
 }

@@ -2,28 +2,34 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Component } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import {DataSource} from '@angular/cdk/collections';
 
-import { DATASET_GET, DATASET_ADD, DATASET_REMOVE, DATASET_ADD_COMMENT, DATASET_UPDATE } from '../store/dataset/dataset.actions';
+import { Subscription } from 'rxjs/Subscription';
+import { DATASET_GET, DATASET_ADD, DATASET_ADD_SUCCESS, 
+  DATASET_REMOVE, DATASET_UPDATE, DATASET_ADD_FAIL, DATASET_UPDATE_SUCCESS, 
+  DATASET_UPDATE_FAIL, DATASET_GET_FAIL, DATASET_GET_SUCCESS } from '../store/dataset/dataset.actions';
+import { DatasetEffects } from '../store/dataset/dataset.effects';
 import { IDataset } from '../store/dataset/dataset.reducer';
 import { IAppState } from '../store';
+
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-datasets',
   templateUrl: './datasets.component.html',
   styleUrls: ['./datasets.component.css']
 })
-export class DatasetsComponent implements OnInit{
+export class DatasetsComponent implements OnInit, OnDestroy{
   datasetsDataSource: DatasetsDataSource;
   selectedDatasetSource: SelectedDatasetSource;
   displayedColumns = [ 'name', 'createdAt'];
   selectedDatasetSourceDisplayedColumns = [];
-
+  subs: Subscription[] = [];  
   form: FormGroup;
   editDataset: FormGroup;
   formData:FormData;
@@ -32,20 +38,82 @@ export class DatasetsComponent implements OnInit{
   datasets$: Store<IDataset[]>;
   selectedDatasetKeys: string[];
   
-  constructor(public fb: FormBuilder, public store: Store<IAppState>) {
+  constructor(public fb: FormBuilder, public store: Store<IAppState>, 
+    public snackBar: MatSnackBar, private datasetEffects: DatasetEffects, ) {
+    // build current
     this.datasets$ = store.select('dataset');
     this.form = fb.group({
       name: ['', Validators.required],
-      uploadFile: ['', Validators.required],
+      uploadFile: ['', this.validateFileSize],
       hasHeaders: [true],
       delimiter: [',']
     });
     this.editDataset = fb.group({
-      name: [],
+      name: ['', Validators.required],
       columnSpec: []
     });
     this.columnSpecForm = fb.group({});
     this.datasetsDataSource = new DatasetsDataSource(this.datasets$);
+
+    this.subs.push(this.datasetEffects.addDataset$
+      .subscribe(res => {
+         switch (res.type){
+          case DATASET_ADD_FAIL:
+            this.snackBar.open('Failed to Add Dataset', 'OK', {
+              duration: 6000,
+            });
+            break;
+
+          case DATASET_ADD_SUCCESS:
+            this.snackBar.open('Dataset Added Successfully', 'OK', {
+              duration: 6000,
+            });
+            break;
+        }
+      }));
+
+    this.subs.push(this.datasetEffects.updateDataset$
+      .subscribe(res => {
+         switch (res.type){
+          case DATASET_UPDATE_FAIL:
+            this.snackBar.open('Failed to Update Dataset', 'OK', {
+              duration: 6000,
+            });
+            break;
+
+          case DATASET_UPDATE_SUCCESS:
+            this.snackBar.open('Dataset Updated Successfully', 'OK', {
+              duration: 6000,
+            });
+            break;
+        }
+      }));
+
+
+    this.subs.push(this.datasetEffects.getDataset$
+      .subscribe(res => {
+         switch (res.type){
+          case DATASET_GET_FAIL:
+            this.snackBar.open('Failed to Retrieve Datasets', 'OK', {
+              duration: 6000,
+            });
+            break;
+
+          case DATASET_GET_SUCCESS:
+            this.snackBar.open('Dataset Retrieved Successfully', 'OK', {
+              duration: 6000,
+            });
+            break;
+        }
+      }));
+  }
+
+  validateFileSize(c: FormControl) {
+    return c.value && c.value.get('uploadFile') && (c.value.get('uploadFile').size / 1024 / 1024 <= 25) ? null : {
+      validateFileSize: {
+        valid: false
+      }
+    };
   }
 
   fileChange(event) {
@@ -55,6 +123,11 @@ export class DatasetsComponent implements OnInit{
         this.formData = new FormData();
         this.formData.append('uploadFile', file, file.name);
         this.form.patchValue({'uploadFile': this.formData, 'name': this.form.value.name});
+        if (file.size / 1024 / 1024 > 25){
+          this.snackBar.open("File must be 25mb or smaller", "OK", {
+            duration: 6000,
+          });
+        }
     }
   }
 
@@ -63,6 +136,10 @@ export class DatasetsComponent implements OnInit{
       type: DATASET_GET
     });
     this.reset();
+  }
+
+  ngOnDestroy(): void{
+    this.subs.forEach(sub => {sub.unsubscribe(); });
   }
 
   submitDataset(): void {
@@ -78,23 +155,6 @@ export class DatasetsComponent implements OnInit{
 
       this.reset();
     }
-  }
-
-  submitCommentOnDataset(id: string, commentForm: FormGroup): void {
-
-    if (commentForm.valid) {
-
-      this.store.dispatch({
-        type: DATASET_ADD_COMMENT,
-        payload: {
-          id,
-          comment: commentForm.value
-        }
-      });
-
-      commentForm.reset();
-    }
-
   }
 
   removeDataset(dataset: IDataset): void {

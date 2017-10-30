@@ -4,7 +4,7 @@ export const length = 128;
 export const digest = "sha256";
 
 export const MONGODB_URI = "";//"mongodb://localhost/myapp";
-export const MONGOLAB_URI = "mongodb://mscs:mscs123@ds111565.mlab.com:11565/mscs-1";
+export const MONGOLAB_URI = process.env.MONGOLAB_URI || "mongodb://mscs:mscs123@ds111565.mlab.com:11565/mscs-1";
 
 export const SESSION_SECRET = "ashdfjhasdlkjfhalksdjhflak";
 
