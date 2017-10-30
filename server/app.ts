@@ -3,6 +3,7 @@ import * as compression from "compression";
 import * as express from "express";
 import * as session from "express-session";
 import * as path from "path";
+import * as request from "request";
 
 import { MONGODB_URI, MONGOLAB_URI, SESSION_SECRET} from "./config";
 import { feedRouter } from "./routes/feed";
@@ -17,6 +18,9 @@ import { evaluationRouter } from "./routes/evaluation";
 
 import * as mongo from "connect-mongo";
 import * as mongoose from "mongoose";
+
+import {  default as Admin } from "./models/Admin";
+
 const MongoStore = mongo(session);
 
 const app: express.Application = express();
@@ -24,12 +28,21 @@ const app: express.Application = express();
 /**
  * Connect to MongoDB.
  */
-// mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise;
 mongoose.connect(MONGODB_URI || MONGOLAB_URI);
 
 mongoose.connection.on("error", () => {
   console.log("MongoDB connection error. Please make sure MongoDB is running.");
   process.exit();
+});
+let workerNodes;
+mongoose.connection.once('open', function() {
+  Admin
+    .findOne()
+    .exec((err, admin) => {
+      console.log("admin",admin,err);
+      workerNodes = admin.workerNodes;
+    });
 });
 
 /**
@@ -38,6 +51,18 @@ mongoose.connection.on("error", () => {
 export interface Request extends express.Request {
   session: [any];
 }
+
+app.use((req, res, next) => {
+  if (workerNodes){
+    workerNodes.forEach(element => {
+      request(element, function (error, response, body) {
+        if (error) console.log('error:', error);
+        console.log(body);
+      });
+    });
+  }
+  next();
+});
 
 app.use(session({
   resave: true,

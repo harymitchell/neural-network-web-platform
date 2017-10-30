@@ -132,6 +132,7 @@ export class DatasetsComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(): void {
+    console.log ("Dataset component init");
     this.store.dispatch({
       type: DATASET_GET
     });

@@ -509,10 +509,8 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
         layers: this.layerControls.map(c => {
           return {'layerType': c.value.modelType, 'arguments': c.value}
         }),
-        outputColumns: this.editModel.get('outputColumns')['allSelectedValues'] ? 
-                        this.editModel.get('outputColumns')['allSelectedValues']() : [],
-        inputColumns: this.editModel.get('inputColumns')['allSelectedValues'] ? 
-                        this.editModel.get('inputColumns')['allSelectedValues']() : [],
+        outputColumns: this.editModel.get('outputColumns').value,
+        inputColumns: this.editModel.get('inputColumns').value,
       });
       this.store.dispatch({
         type: MODEL_UPDATE,

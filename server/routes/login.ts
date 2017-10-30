@@ -37,7 +37,8 @@ function createGoogleUser(login, request: Request, response: Response){
             response.status(500).send("error");
           }; 
           console.log ("createdUser",createdUser);
-          request.session["user"] = user;
+          request.session["user"] = createdUser;
+          console.log("session user",request.session["user"])
           response.json(createdUser);
         });
       }

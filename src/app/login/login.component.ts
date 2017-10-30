@@ -36,6 +36,7 @@ export class LoginComponent implements OnDestroy, OnInit {
             .subscribe(res => {
                 console.log("LOGIN userCreate effect");
                 this.router.navigate(['/datasets']);
+                location.reload();
             })
     );
 
@@ -52,6 +53,7 @@ export class LoginComponent implements OnDestroy, OnInit {
         this.logout();
     } else if (this.currentUser) {
         this.router.navigate(['/datasets']);
+        // location.reload();
     }
   }
 
