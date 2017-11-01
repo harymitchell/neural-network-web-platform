@@ -48,7 +48,6 @@
     "@types/node": "~6.0.60",
     "@types/ui-grid": "0.0.38",
     "@types/uuid": "2.0.29",
-    "angular2-google-chart": "2.3.0",
     "angular2-social-login": "3.1.1",
     "body-parser": "~1.17.1",
     "compression": "1.6.2",

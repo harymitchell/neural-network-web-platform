@@ -1,3 +1,7 @@
+button {
+  margin: 10px 0px 10px 0px;
+}
+
 .button {
   position: relative;
   background-color: #4CAF50;

@@ -35,6 +35,8 @@ import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
 
 import {SelectModelComponent} from './selectModel/selectModel.component';
 import {CreateModelComponent} from '../shared/createModel/createModel.component';
+import {SelectDatasetComponent} from './selectDataset/selectDataset.component';
+import { ChartSelectEvent } from 'ng2-google-charts';
 
 /**
  * export interface IModel {
@@ -83,7 +85,6 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
     'NONE'
   ];
   INITIALIZERS: string[] = [
-    'Initializer',
     'Zeros',
     'Ones',
     'Constant',
@@ -230,6 +231,7 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
   evaluationDisplayedColumns = [ 'worker', 'status'];
   chartDataSubscription: Subscription;
   metricsChartData = null;
+  chartedEvaluations: IEvaluation[] = [];
 
   constructor(public fb: FormBuilder, 
               public store: Store<IAppState>, 
@@ -419,9 +421,10 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.chartDataSubscription.unsubscribe();
     }
     this.chartDataSubscription = this.evaluations$.subscribe(evaluations => {
-      evaluations = evaluations.filter(evaluation => {
-        return evaluation.status === "DONE";
-      });
+      this.chartedEvaluations = [];
+      // evaluations = evaluations.filter(evaluation => {
+      //   return evaluation.status === "DONE";
+      // });
       if (evaluations.length <= 0) {
         return;
       }
@@ -432,14 +435,19 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
       let i = 0;
       let acc_index = 0; 
       evaluations.forEach(evaluation => {
-        evaluation.metrics_names.some(m => {
-          if (/accuracy/.test(m.toLowerCase()) || /error/.test(m.toLowerCase())) {
-            // Only showing Accuracy and Error for now.
-            dataTable.push([i, evaluation.scores[evaluation.metrics_names.indexOf(m.valueOf())]]);
-            return true;
-          }
-          return false;
-        });
+        this.chartedEvaluations.push(evaluation);
+        if (evaluation.status === 'DONE'){
+          evaluation.metrics_names.some(m => {
+            if (/accuracy/.test(m.toLowerCase()) || /error/.test(m.toLowerCase())) {
+              // Only showing Accuracy and Error for now.
+              dataTable.push([i, evaluation.scores[evaluation.metrics_names.indexOf(m.valueOf())]]);
+              return true;
+            }
+            return false;
+          });
+        } else {
+          dataTable.push([i, null]);
+        }
         ++i;
       });
       const columnsCount = Math.max(dataTable.length - 1, 20);
@@ -495,7 +503,11 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.crossValidationFormGroup.patchValue({n_splits: n_splits});
       }
       if (typeof this.crossValidationFormGroup.value.shuffle !== "boolean") {
-        this.crossValidationFormGroup.patchValue({shuffle: this.crossValidationFormGroup.value.shuffle.toLowerCase() === 'true'})
+        this.crossValidationFormGroup.patchValue({
+          shuffle: this.crossValidationFormGroup.value.shuffle ? 
+            this.crossValidationFormGroup.value.shuffle.toLowerCase() === 'true' : 
+            'false'
+        })
       }
       this.editModel.patchValue({
         estimators: Object.keys(this.estimatorsFormGroup.value)
@@ -600,13 +612,13 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
         'units': 1,
         'activation': 'linear',
         'use_bias' : true,
-        'kernel_initializer': this.INITIALIZERS[0],
-        'bias_initializer': this.INITIALIZERS[0],
-        'kernel_regularizer': this.REGULARIZERS[0],
-        'bias_regularizer': this.REGULARIZERS[0],
-        'activity_regularizer': this.REGULARIZERS[0],
-        'kernel_constraint': this.CONSTRAINTS[0],
-        'bias_constraint': this.CONSTRAINTS[0]
+        'kernel_initializer': "NONE",
+        'bias_initializer': "NONE",
+        'kernel_regularizer': "NONE",
+        'bias_regularizer': "NONE",
+        'activity_regularizer': "NONE",
+        'kernel_constraint': "NONE",
+        'bias_constraint': "NONE",
         }
       };
   }
@@ -655,14 +667,29 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   
   openSelectModelDialog() {
-    let dialogRef = this.dialog.open(SelectModelComponent, {
+    const dialogRef = this.dialog.open(SelectModelComponent, {
       data: { 
         models$: this.models$,
-        selectModel: this.selectModel
       },
     });
     dialogRef.afterClosed().subscribe(result => {
       this.selectModel(result);
+    });
+  }
+
+  onSelectDatasetDialogOpen() {
+    const dialogRef = this.dialog.open(SelectDatasetComponent, {
+      data: { 
+        datasets$: this.datasets$,
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result){
+        this.store.dispatch({
+          type: SELECTED_MODEL_UPDATE,
+          dataset: result
+        });
+      }
     });
   }
 
@@ -687,6 +714,17 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.snackBar.open(message, action, {
       duration: duration,
     });
+  }
+
+  onChartSelect($event: ChartSelectEvent) {
+    console.log($event);
+    if ($event && typeof $event.row == 'number' && this.chartedEvaluations[$event.row]) {
+      this.store.dispatch({
+        type: SELECTED_MODEL_UPDATE,
+        sliderCurrentIndex: $event.row
+      });
+      this.reset();
+    }
   }
 
 }

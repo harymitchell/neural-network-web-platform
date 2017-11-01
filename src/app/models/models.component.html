@@ -62,7 +62,7 @@
                   </mat-table>            
                 </mat-tab>
                 <mat-tab label="Metrics">
-                  <google-chart [data]="metricsChartData"></google-chart>
+                  <google-chart [data]="metricsChartData" (chartSelect)='onChartSelect($event)'></google-chart>
                 </mat-tab>
             </mat-tab-group>
             <h1>Model Workspace</h1>
@@ -124,7 +124,8 @@
 
                 <mat-tab label="Dataset" class="w3-container">
                   <h3>Dataset</h3>
-                  <a *ngIf="!selectedModel.isHistorical" [routerLink]="[{outlets: { modal : 'selectDataset'}}]" routerLinkActive="active">Select Dataset</a>
+                  <app-ui-button [disabled]="selectedModel.isHistorical" text="Select Dataset" (click)="onSelectDatasetDialogOpen();"></app-ui-button>                  
+                  <!-- <a *ngIf="!selectedModel.isHistorical" [routerLink]="[{outlets: { modal : 'selectDataset'}}]" routerLinkActive="active">Select Dataset</a> -->
                   <div *ngIf="selectedModelDataset(selectedModel)">
                     <app-ui-input value="{{selectedModelDataset(selectedModel).name}}" label="Dataset Name" readonly="readonly"></app-ui-input>
                     <app-ui-select [multiValue]="selectedModel?.inputColumns" label="Input Columns" name="inputColumns" [control]="editModel.get('inputColumns')" [options]="objectKeys(selectedModelDataset(selectedModel).data[0])" multiple="true"></app-ui-select>       
