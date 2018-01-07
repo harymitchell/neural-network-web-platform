@@ -87,8 +87,9 @@ export function selectedModelReducer(state: ISelectedModel, action: Actions): IS
       if (!state.selectedModel){
         return state;
       }
-      selectedModel = JSON.parse(JSON.stringify(state.selectedModel));
-      selectedModel.layers = JSON.parse(JSON.stringify(action.payload.model.layers));;
+      // selectedModel = JSON.parse(JSON.stringify(state.selectedModel));
+      // selectedModel.layers = JSON.parse(JSON.stringify(action.payload.model.layers));
+      selectedModel = Object.assign({}, JSON.parse(JSON.stringify(state.selectedModel)), JSON.parse(JSON.stringify(action.payload.model)), {dataset: state.selectedModel.dataset});
       if (!selectedModel.layers){
         selectedModel.layers = [];
       }
