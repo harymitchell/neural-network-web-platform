@@ -83,13 +83,13 @@ export class SelectedModelUpdateLayerSuccess implements Action {
 export class SelectedModelAddLayer implements Action {
   readonly type = SELECTED_MODEL_ADD_LAYER;
 
-  constructor(public payload: IModelLayer) {}
+  constructor(public payload: {newLayer: IModelLayer, model: IModel}) {}
 }
 
 export class SelectedModelAddLayerSuccess implements Action {
   readonly type = SELECTED_MODEL_ADD_LAYER_SUCCESS;
 
-  constructor(public payload: IModelLayer) {}
+  constructor(public payload: {newLayer: IModelLayer, model: IModel}) {}
 }
 
 export class SelectedModelAddLayerFail implements Action {

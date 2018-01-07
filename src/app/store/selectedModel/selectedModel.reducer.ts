@@ -88,10 +88,11 @@ export function selectedModelReducer(state: ISelectedModel, action: Actions): IS
         return state;
       }
       selectedModel = JSON.parse(JSON.stringify(state.selectedModel));
+      selectedModel.layers = JSON.parse(JSON.stringify(action.payload.model.layers));;
       if (!selectedModel.layers){
         selectedModel.layers = [];
       }
-      selectedModel.layers.push(action.payload);
+      selectedModel.layers.push(action.payload.newLayer);
       // return model;
       return Object.assign({}, state, {selectedModel: selectedModel});
 

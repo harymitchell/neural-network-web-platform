@@ -485,45 +485,49 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       });
+    };
+  }
+
+  updateEditModel(model: IModel): void {
+    const dataset = this.selectedModelDataset(model);
+    if (dataset) {
+      this.editModel.patchValue({dataset: dataset._id});
     }
+    if (typeof this.crossValidationFormGroup.value.n_splits !== 'number') {
+      let n_splits = parseInt(this.crossValidationFormGroup.value.n_splits);
+      if (!n_splits) {
+        n_splits = 2;
+      }
+      this.crossValidationFormGroup.patchValue({n_splits: n_splits});
+    }
+    if (typeof this.crossValidationFormGroup.value.shuffle !== "boolean") {
+      this.crossValidationFormGroup.patchValue({
+        shuffle: this.crossValidationFormGroup.value.shuffle ? 
+          this.crossValidationFormGroup.value.shuffle.toLowerCase() === 'true' :
+          'false'
+      });
+    }
+    this.editModel.patchValue({
+      estimators: Object.keys(this.estimatorsFormGroup.value)
+                  .filter(key => {
+                    return this.estimatorsFormGroup.value[key];
+                  })
+                  .map(key => {
+                    return {name: key};
+                  }),
+      cross_validation: this.crossValidationFormGroup.value,
+      layers: this.layerControls.map(c => {
+        return {'layerType': c.value.modelType, 'arguments': c.value}
+      }),
+      outputColumns: this.editModel.get('outputColumns').value,
+      inputColumns: this.editModel.get('inputColumns').value,
+    });
   }
 
   updateModel(model: IModel): void {
     if (this.editModel.valid) {
       console.log ('updateModel');
-      const dataset = this.selectedModelDataset(model);
-      if (dataset) {
-        this.editModel.patchValue({dataset: dataset._id});
-      }
-      if (typeof this.crossValidationFormGroup.value.n_splits !== 'number') {
-        let n_splits = parseInt(this.crossValidationFormGroup.value.n_splits);
-        if (!n_splits) {
-          n_splits = 2;
-        }
-        this.crossValidationFormGroup.patchValue({n_splits: n_splits});
-      }
-      if (typeof this.crossValidationFormGroup.value.shuffle !== "boolean") {
-        this.crossValidationFormGroup.patchValue({
-          shuffle: this.crossValidationFormGroup.value.shuffle ? 
-            this.crossValidationFormGroup.value.shuffle.toLowerCase() === 'true' : 
-            'false'
-        })
-      }
-      this.editModel.patchValue({
-        estimators: Object.keys(this.estimatorsFormGroup.value)
-                    .filter(key => {
-                      return this.estimatorsFormGroup.value[key];
-                    })
-                    .map(key => {
-                      return {name: key};
-                    }),
-        cross_validation: this.crossValidationFormGroup.value,
-        layers: this.layerControls.map(c => {
-          return {'layerType': c.value.modelType, 'arguments': c.value}
-        }),
-        outputColumns: this.editModel.get('outputColumns').value,
-        inputColumns: this.editModel.get('inputColumns').value,
-      });
+      this.updateEditModel(model);
       this.store.dispatch({
         type: MODEL_UPDATE,
         payload: this.editModel.value,
@@ -624,9 +628,13 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   newLayer(model: IModel): void {
+    this.updateEditModel(model);
     this.store.dispatch({
       type: SELECTED_MODEL_ADD_LAYER,
-      payload: this.newDenseLayer()
+      payload: {
+        newLayer: this.newDenseLayer(),
+        model: this.editModel.value
+      }
     });
   }
 

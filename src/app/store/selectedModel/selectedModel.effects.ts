@@ -41,9 +41,9 @@ export class SelectedModelEffects {
         .switchMap((action: SelectedModelAddLayer) => {
             console.log ('addLayerSelectedModel'); 
             const layer = new IModelLayer();
-            layer._id = action.payload._id;
-            layer.layerType = action.payload.layerType;
-            layer.arguments = action.payload.arguments;
+            layer._id = action.payload.newLayer._id;
+            layer.layerType = action.payload.newLayer.layerType;
+            layer.arguments = action.payload.newLayer.arguments;
             return Observable.of(new SelectedModelAddLayerSuccess(action.payload));
         }).share();
 
