@@ -232,6 +232,7 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
   chartDataSubscription: Subscription;
   metricsChartData = null;
   chartedEvaluations: IEvaluation[] = [];
+  isLoading: Boolean;
 
   constructor(public fb: FormBuilder, 
               public store: Store<IAppState>, 
@@ -356,15 +357,13 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.store.dispatch({
       type: DATASET_GET
     });
+    this.selectedModel$.take(1).subscribe(model => {
+      if (model && model.selectedModel){
+        console.log ("setting model on init");
+        this.selectModel(model.selectedModel);
+      }
+    });
     this.reset();
-    const _that = this;
-    // setTimeout(function(){
-    //   _that.selectedModel$.take(1).subscribe(model => {
-    //     if (! (model && model.selectedModel)) {
-    //       _that.openSelectModelDialog();
-    //     }
-    //   });
-    // });
   }
 
   ngAfterViewInit(): void{
@@ -399,6 +398,7 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
  
   selectModel(model: IModel): void {
+    this.isLoading = true;
     this.reset();
     this.store.dispatch({
       type: SELECTED_MODEL_SET,
@@ -469,6 +469,7 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
         },
       };
     });
+    this.isLoading = false;
   }
 
   onLayerTypeChange(i: Number, layer: IModelLayer): Function {
@@ -528,13 +529,14 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.editModel.valid) {
       console.log ('updateModel');
       this.updateEditModel(model);
+      // TODO: UI - screen clears briefly when saving model #1
+      this.selectModel(null);
       this.store.dispatch({
         type: MODEL_UPDATE,
         payload: this.editModel.value,
         _id: model._id
       });
       this.reset();
-      this.selectModel(null);
     }
   }
 

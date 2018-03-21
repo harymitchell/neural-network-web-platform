@@ -88,7 +88,10 @@ datasetRouter.put("/:id", (request: Request, response: Response) => {
   });
 });
 
-function typeString(x){ return parseInt(x) ? "Number" : (true === x || false === x) ? "Boolean" : "String" };
+function typeString(x){ 
+  const parsed = parseInt(x);
+  return Number.isNaN(parsed) ? (true === x || false === x) ? "Boolean" : "String" : "Number";
+};
 
 /**
  * Create Dataset

@@ -14,14 +14,10 @@
       </button>
     </mat-menu>
   </div>
-  <!-- <mat-sidenav-container class="example-sidenav-fab-container">
-    <mat-sidenav #sidenav mode="side" opened="false">
-    </mat-sidenav> -->
-    <!-- <app-ui-button text="New Model" (click)="addModel()"></app-ui-button> -->
-    <!-- <a [routerLink]="[{outlets: { modal : 'createModel'}}]" routerLinkActive="active" [queryParams]="{routerLink: '/models'}" >
-        <app-ui-button text="New Model" class="sidebarListButton"></app-ui-button>
-    </a>
-    <app-ui-button text="Select Model" (click)="openSelectModelDialog()"></app-ui-button>     -->
+  <div *ngIf="isLoading;else ready">
+      <mat-spinner style="margin: 0 auto;"></mat-spinner>      
+  </div>
+  <ng-template #ready>
     <div *ngIf="!(selectedModel$ | async)?.selectedModel" class="placeHolder">
       <button mat-raised-button color="primary" (click)="openSelectModelDialog()">
           <mat-icon>find_in_page</mat-icon>
@@ -177,4 +173,5 @@
       </div>
     </mat-card>
   <!-- </mat-sidenav-container> -->
+  </ng-template>  
 </mat-card>
