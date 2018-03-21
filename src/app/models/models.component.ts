@@ -358,13 +358,13 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.reset();
     const _that = this;
-    setTimeout(function(){
-      _that.selectedModel$.take(1).subscribe(model => {
-        if (! (model && model.selectedModel)) {
-          _that.openSelectModelDialog();
-        }
-      });
-    })
+    // setTimeout(function(){
+    //   _that.selectedModel$.take(1).subscribe(model => {
+    //     if (! (model && model.selectedModel)) {
+    //       _that.openSelectModelDialog();
+    //     }
+    //   });
+    // });
   }
 
   ngAfterViewInit(): void{

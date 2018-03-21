@@ -19,8 +19,8 @@ export class ProfileEffects {
 
       return this.http.get('/api/user', action.payload)
         .map((response: Response) => response.json())
-        .catch((error) => Observable.of(new UserGetFail(error)))
-        .map((response) => new UserGetSuccess(response));
+        .map((response) => new UserGetSuccess(response))
+        .catch((error) => Observable.of(new UserGetFail(error)));
     }).share();
 
   /**
@@ -33,8 +33,8 @@ export class ProfileEffects {
 
         return this.http.post('/api/login', action.payload)
           .map((response: Response) => response.json())
-          .catch((error) => Observable.of(new UserCreateFail(error)))
-          .map((response) => new UserCreateSuccess(response));
+          .map((response) => new UserCreateSuccess(response))
+          .catch((error) => Observable.of(new UserCreateFail(error)));
       }).share();
 
   /**

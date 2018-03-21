@@ -4,6 +4,7 @@ import { Evaluation } from "../models/Evaluation";
 import { Model } from "../models/Model";
 import { userValidator } from "./validator";
 
+import requestLib = require("request");
 import { Response, Router } from "express";
 
 const evaluationRouter: Router = Router();
@@ -14,27 +15,35 @@ const evaluationRouter: Router = Router();
  */
 evaluationRouter.get("/", userValidator, (request: Request, response: Response) => {
   console.log (request.session);
-  Evaluation.find().populate('user').exec((err, evaluations) => {
-    if (err) {
-      return console.error(err);
-    }
-    // console.log(evaluations);
-    response.json(evaluations);
-  });
+  Evaluation
+    .find()
+    .select('-serviceURL -pathToHDF5')
+    .populate('user')
+    .exec((err, evaluations) => {
+      if (err) {
+        return console.error(err);
+      }
+      // console.log(evaluations);
+      response.json(evaluations);
+    });
 });
 
 /**
  * Get One Evaluation by id
  */
 evaluationRouter.get("/:id", (request: Request, response: Response) => {
-  Evaluation.findOne({_id: request.params.id}).populate('user').exec((err, evaluation) => {
-    if (err || !evaluation) {
-      console.error(err || "Not found.");
-      return response.status(404).send("Not found :(");
-    };
-    // console.log(evaluation);
-    response.json(evaluation);
-  });
+  Evaluation
+    .findOne({_id: request.params.id})
+    .select('-serviceURL -pathToHDF5')
+    .populate('user')
+    .exec((err, evaluation) => {
+      if (err || !evaluation) {
+        console.error(err || "Not found.");
+        return response.status(404).send("Not found :(");
+      };
+      // console.log(evaluation);
+      response.json(evaluation);
+    });
 });
 
 /**
@@ -113,6 +122,35 @@ evaluationRouter.delete("/:id", (request: Request, response: Response) => {
     }
   });
 
+});
+
+/**
+ * Evaluate Deploy by id
+ */
+evaluationRouter.post("/evaluate/:id", (request: Request, response: Response) => {
+
+  Evaluation.findOne({_id: request.params.id}).populate('user').exec((err, evaluation) => {
+    if (err || !evaluation) {
+      console.error(err || "Not found.");
+      return response.status(404).send("Not found :(");
+    };
+
+    if (!evaluation.serviceURL){
+      console.error(err || "No serviceURL found.");
+      return response.status(404).send("No serviceURL found :(");
+    }
+    // Proxy request
+    requestLib
+        .post({url: evaluation.serviceURL, data: request.body})
+        .on('response', function(response) {
+            response.json(response);
+        })
+        .on('error', function(response) {
+            console.log("proxy call failed",response.statusCode);
+            response.status(500).send("Proxy call failed :(");
+        });
+  });
+  
 });
 
 export { evaluationRouter };

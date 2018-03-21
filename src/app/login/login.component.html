@@ -1,11 +1,14 @@
 <div>
-    <div *ngIf="!currentUser">
+    <div *ngIf="profile$ | async as currentUser; else login">
+        You are logged in.
+    </div>
+    <ng-template #login>
         <h1>Login Securely via Google</h1>
         <button (click)="signIn('google')">google</button>
         <!-- <button (click)="signIn('linkedin')">linkedIn</button>
         <button (click)="signIn('facebook')">facebook</button> -->
         <button (click)="logout()">logout</button>
-    </div>
+    </ng-template>
     <!-- <div *ngIf="currentUser">
         <table>
             <tr>

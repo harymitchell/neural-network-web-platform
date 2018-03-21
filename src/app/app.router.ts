@@ -2,7 +2,7 @@ import { Route } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Route[] = [
-  { path: '', pathMatch: 'full', redirectTo: 'login'},
+  { path: '', pathMatch: 'full', redirectTo: 'datasets', canActivate: [AuthGuard]},
   { loadChildren: 'app/datasets/datasets.module#DatasetsModule', path: 'datasets', canActivate: [AuthGuard] },
   { loadChildren: 'app/models/models.module#ModelsModule', path: 'models', canActivate: [AuthGuard] },
   { loadChildren: 'app/evaluations/evaluations.module#EvaluationsModule', path: 'evaluations', canActivate: [AuthGuard] },

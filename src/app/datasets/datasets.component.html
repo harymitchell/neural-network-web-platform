@@ -49,14 +49,18 @@
       <div class="w3-responsive">
 
           <div class="example-container mat-elevation-z8" *ngIf="selectedDatasetSource">
-            <mat-table #table [dataSource]="selectedDatasetSource">    
+            <mat-table style="overflow: scroll;" #table [dataSource]="selectedDatasetSource">    
               
               <ng-container *ngFor="let col of selectedDatasetSourceDisplayedColumns" matColumnDef="{{col}}">
                 <mat-header-cell *matHeaderCellDef>
                   <h2>{{col}}</h2>
-                  <app-ui-select [value]="columnDType(selectedDataset, col)" [control]="columnSpecForm.get(col)" [options]="['String', 'Number', 'Boolean']"></app-ui-select>
+                  <app-ui-select 
+                    [value]="columnDType(selectedDataset, col)"
+                    [control]="columnSpecForm.get(col)" 
+                    [options]="['String', 'Number', 'Boolean']">
+                  </app-ui-select>
                 </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element[col]}} </mat-cell>
+                <mat-cell *matCellDef="let element"> <p style="width: 200px">{{element[col]}}</p> </mat-cell>
               </ng-container>
           
               <mat-header-row *matHeaderRowDef="selectedDatasetSourceDisplayedColumns"></mat-header-row>

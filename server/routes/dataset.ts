@@ -88,6 +88,8 @@ datasetRouter.put("/:id", (request: Request, response: Response) => {
   });
 });
 
+function typeString(x){ return parseInt(x) ? "Number" : (true === x || false === x) ? "Boolean" : "String" };
+
 /**
  * Create Dataset
  */
@@ -124,12 +126,16 @@ datasetRouter.post("/", userValidator, (request: Request, response: Response) =>
           // dataArray.push(jsonObj);
         })
         .on('done',() => {
-
+          const colSpec = {};
+          Object.keys(dataArray[0]).forEach(key => {
+            colSpec[key] = {"dataType": typeString(dataArray[0][key])};
+          });
           // Create model entity
           const newDataset = new Dataset({
             name: fields.name,
             user: request.session["user"]._id,
-            data: dataArray
+            data: dataArray,
+            columnSpec: colSpec
           });
 
           // Save dataset

@@ -1,12 +1,16 @@
 <ul class="topnav" #topnav> 
-    <li *ngIf="currentUser"><a routerLink="/datasets" routerLinkActive="active">Datasets</a></li>
-    <li *ngIf="currentUser"><a routerLink="/models" routerLinkActive="active">Models</a></li>
-    <!-- <li *ngIf="currentUser"><a routerLink="/evaluations" routerLinkActive="active">Evaluations</a></li> --> 
-  <li *ngIf="currentUser"><a routerLink="/profile" routerLinkActive="active">Profile</a></li>
-  <li *ngIf="!currentUser"><a routerLink="/login" routerLinkActive="active">Login</a></li>
-  <li *ngIf="currentUser"><a routerLink="/logout" routerLinkActive="active">Logout</a></li>
-  <!-- <li *ngIf="currentUser"><a routerLink="/weather" route/rLinkActive="active">Weather</a></li> -->
-  <li id="currentUser" *ngIf="currentUser">{{currentUser.name}}</li>  
+    <div *ngIf="profile$ | async as currentUser; else login">
+        <li *ngIf="currentUser"><a routerLink="/datasets" routerLinkActive="active">Datasets</a></li>
+        <li *ngIf="currentUser"><a routerLink="/models" routerLinkActive="active">Models</a></li>
+        <li *ngIf="currentUser"><a routerLink="/profile" routerLinkActive="active">Profile</a></li>
+        <li *ngIf="currentUser"><a routerLink="/logout" routerLinkActive="active">Logout</a></li>
+        
+        <li id="currentUser" *ngIf="currentUser">{{currentUser.name}}</li>  
+    </div>
+    <ng-template #login>
+      <li *ngIf="!currentUser"><a routerLink="/login" routerLinkActive="active">Login</a></li>    
+    </ng-template>
+
   
   <li class="icon">
     <a (click)="toggle()">&#9776;</a>

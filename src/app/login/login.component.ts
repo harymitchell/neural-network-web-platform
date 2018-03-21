@@ -5,8 +5,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { IAppState } from '../store/index';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { USER_GET, USER_CREATE, USER_LOGOUT, USER_CREATE_SUCCESS, USER_LOGOUT_SUCCESS } from '../store/profile/profile.actions';
+import { USER_GET, USER_GET_SUCCESS, USER_GET_FAIL, USER_CREATE, USER_LOGOUT, USER_CREATE_SUCCESS, USER_LOGOUT_SUCCESS } from '../store/profile/profile.actions';
 import { ProfileEffects } from '../store/profile/profile.effects';
+import { IProfile } from '../store/profile/profile.reducer';
 
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -20,9 +21,15 @@ import { AuthService } from 'angular2-social-login';
 export class LoginComponent implements OnDestroy, OnInit {
   currentUser: Object;
   subs: Subscription[];
+  profile$: Observable<IProfile>;
+  profileStore$:  Store<IProfile>;
 
   constructor(private store: Store<IAppState>, public _auth: AuthService, private router: Router, private profileEffects: ProfileEffects) { 
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    // this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    this.profileStore$ = store.select('profile');
+    this.profile$ = this.profileStore$.map((profile) => profile);
+
     this.subs = [];
     this.subs.push(
         store.subscribe(res => {
@@ -36,9 +43,19 @@ export class LoginComponent implements OnDestroy, OnInit {
             .subscribe(res => {
                 console.log("LOGIN userCreate effect");
                 this.router.navigate(['/datasets']);
-                location.reload();
+                // location.reload();
             })
     );
+
+    // this.subs.push(
+    //     this.profileEffects.userGet$
+    //         .filter(action => action.type === USER_GET_SUCCESS)
+    //         .subscribe(res => {
+    //             console.log("User Get success login componenet");
+    //             // this.router.navigate(['/datasets']);
+    //             // location.reload();
+    //         })
+    // );
 
     this.subs.push(
         this.profileEffects.userLogout$
@@ -51,10 +68,11 @@ export class LoginComponent implements OnDestroy, OnInit {
     console.log("LoginComponent", document.location);
     if (document.location.hash === '#/logout') {
         this.logout();
-    } else if (this.currentUser) {
-        this.router.navigate(['/datasets']);
+    } 
+    // else if (this.currentUser) {
+        // this.router.navigate(['/datasets']);
         // location.reload();
-    }
+    // }
   }
 
   signIn(provider){
@@ -85,6 +103,9 @@ export class LoginComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(){
+    // this.store.dispatch({
+    //   type: USER_GET
+    // });
   }
 
   ngOnDestroy(){

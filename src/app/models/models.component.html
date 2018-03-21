@@ -23,7 +23,14 @@
     </a>
     <app-ui-button text="Select Model" (click)="openSelectModelDialog()"></app-ui-button>     -->
     <div *ngIf="!(selectedModel$ | async)?.selectedModel" class="placeHolder">
-      Please select or create a Model
+      <button mat-raised-button color="primary" (click)="openSelectModelDialog()">
+          <mat-icon>find_in_page</mat-icon>
+          <span>Select Model</span>
+      </button>
+      <button mat-raised-button color="primary" (click)="openCreateModelDialog()">
+        <mat-icon>note_add</mat-icon>
+        <span>Create Model</span>
+      </button>
     </div>
     <mat-card id="selectedModel" >
       <div *ngIf="(selectedModel$ | async) as selectedModelState">
@@ -70,7 +77,8 @@
                 <label >Model History</label>
                 <!-- <input type="range" id="rangeControlledByDate" value="selectedModelState.sliderCurrentIndex" step="1" min="0" max="{{models.length - 1}}" (change)="onDateSliderInput($event, models)" class="slider"/> -->
                 <input type="text"  id="dateControlledByRange" value="{{dateTextForIndex(models, selectedModelState.sliderCurrentIndex)}}" disabled/>
-    
+                <!-- <app-ui-button [disabled]="selectedModel"  text="Update Model" (click)="updateModel(selectedModel)"></app-ui-button> -->
+
                 <mat-slider
                     id="historySlider"
                     [disabled]="disabled"
