@@ -7,7 +7,9 @@ const datasetSchema = new mongoose.Schema({
     delimiter: String,
     columnSpec: {
     },
-    user: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
+    user: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    gridFile_id: mongoose.Schema.Types.ObjectId,
+    useGridFile: Boolean
 }, { timestamps: true });
 
 datasetSchema.methods.dataSelection = function (count: number, startIndex: number) {

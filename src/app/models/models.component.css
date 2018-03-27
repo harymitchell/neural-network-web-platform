@@ -1,3 +1,8 @@
+.mat-table {
+  overflow: auto;
+  max-height: 250px;
+}
+
 #historySlider{
   width: 100%;
   padding: 0 0 0 20px;

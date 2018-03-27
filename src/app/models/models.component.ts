@@ -440,6 +440,7 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
           evaluation.metrics_names.some(m => {
             if (/accuracy/.test(m.toLowerCase()) || /error/.test(m.toLowerCase())) {
               // Only showing Accuracy and Error for now.
+              // let style = 'point { size: 10; fill-color: #a52714; }'
               dataTable.push([i, evaluation.scores[evaluation.metrics_names.indexOf(m.valueOf())]]);
               return true;
             }

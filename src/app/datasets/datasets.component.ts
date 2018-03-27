@@ -19,6 +19,8 @@ import { IAppState } from '../store';
 
 import { MatSnackBar } from '@angular/material';
 
+const MAX_FILE_SIZE = 50;
+
 @Component({
   selector: 'app-datasets',
   templateUrl: './datasets.component.html',
@@ -109,7 +111,7 @@ export class DatasetsComponent implements OnInit, OnDestroy{
   }
 
   validateFileSize(c: FormControl) {
-    return c.value && c.value.get('uploadFile') && (c.value.get('uploadFile').size / 1024 / 1024 <= 25) ? null : {
+    return c.value && c.value.get('uploadFile') && (c.value.get('uploadFile').size / 1024 / 1024 <= MAX_FILE_SIZE) ? null : {
       validateFileSize: {
         valid: false
       }
@@ -123,8 +125,8 @@ export class DatasetsComponent implements OnInit, OnDestroy{
         this.formData = new FormData();
         this.formData.append('uploadFile', file, file.name);
         this.form.patchValue({'uploadFile': this.formData, 'name': this.form.value.name});
-        if (file.size / 1024 / 1024 > 25){
-          this.snackBar.open("File must be 25mb or smaller", "OK", {
+        if (file.size / 1024 / 1024 > MAX_FILE_SIZE){
+          this.snackBar.open("File must be "+MAX_FILE_SIZE+"mb or smaller", "OK", {
             duration: 6000,
           });
         }

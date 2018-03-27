@@ -20,6 +20,7 @@ import * as mongo from "connect-mongo";
 import * as mongoose from "mongoose";
 
 import {  default as Admin } from "./models/Admin";
+import { Dataset } from "./models/Dataset";
 
 const MongoStore = mongo(session);
 
@@ -41,8 +42,13 @@ mongoose.connection.once('open', function() {
     .findOne()
     .exec((err, admin) => {
       console.log("admin",admin,err);
-      workerNodes = admin.workerNodes;
+      if (admin) workerNodes = admin.workerNodes;
     });
+
+    // setup gridFS
+    const Grid = require('gridfs-stream');
+    const GridFS = Grid(mongoose.connection.db, mongoose.mongo);
+    mongoose.GridFS = GridFS;
 });
 
 /**
