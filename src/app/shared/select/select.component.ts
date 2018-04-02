@@ -19,6 +19,8 @@ export class SelectComponent {
   @Input() options: string[];
   @Input() changeFunction: Function;
   @Input() multiple: String;
+  @Input() canSelectAll: Boolean;
+  @Input() canDeselectAll: Boolean;
   @ViewChild('selectElement') selectElement: ElementRef;
 
   @Input() multiValue: Array<string>;
@@ -28,6 +30,20 @@ export class SelectComponent {
     if (this.changeFunction) {
       this.changeFunction(val);
     }
+  }
+
+  isSelected(option){
+
+  }
+
+  onSelectAll(){
+    console.log ("onSelectAll")
+    this.control.setValue(this.options);
+  }
+
+  onDeselectAll(){
+    console.log ("onDeselectAll")
+    this.control.setValue([]);
   }
 
   errorMessage(errors: ValidationErrors): String {

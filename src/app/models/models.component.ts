@@ -673,10 +673,12 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.selectModel(result);
+      if (result) {
+        this.selectModel(result);
+      }
     });
   }
-  
+
   openSelectModelDialog() {
     const dialogRef = this.dialog.open(SelectModelComponent, {
       data: { 
@@ -684,7 +686,9 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.selectModel(result);
+      if (result) {
+        this.selectModel(result);
+      }
     });
   }
 

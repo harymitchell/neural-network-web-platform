@@ -1,6 +1,6 @@
 {
-  "name": "Angular2 Express Starter",
-  "description": "Starter application of Angular2 with Express",
+  "name": "Neural Network Builder",
+  "description": "Form-based building and testing of Neural Networks",
   "repository": "https://github.com/vladotesanovic/angular2-express-starter",
   "keywords": ["angular2", "express", "node"]
 }

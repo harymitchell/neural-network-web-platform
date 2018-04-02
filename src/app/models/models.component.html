@@ -132,8 +132,8 @@
                   <!-- <a *ngIf="!selectedModel.isHistorical" [routerLink]="[{outlets: { modal : 'selectDataset'}}]" routerLinkActive="active">Select Dataset</a> -->
                   <div *ngIf="selectedModelDataset(selectedModel)">
                     <app-ui-input value="{{selectedModelDataset(selectedModel).name}}" label="Dataset Name" readonly="readonly"></app-ui-input>
-                    <app-ui-select [multiValue]="selectedModel?.inputColumns" label="Input Columns" name="inputColumns" [control]="editModel.get('inputColumns')" [options]="objectKeys(selectedModelDataset(selectedModel).data[0])" multiple="true"></app-ui-select>       
-                    <app-ui-select [multiValue]="selectedModel?.outputColumns" label="Output Columns" name="outputColumns" [control]="editModel.get('outputColumns')" [options]="objectKeys(selectedModelDataset(selectedModel).data[0])" multiple="true"></app-ui-select>
+                    <app-ui-select [canSelectAll]="true" [canDeselectAll]="true" [multiValue]="selectedModel?.inputColumns" label="Input Columns" name="inputColumns" [control]="editModel.get('inputColumns')" [options]="objectKeys(selectedModelDataset(selectedModel).data[0])" multiple="true"></app-ui-select>       
+                    <app-ui-select [canSelectAll]="true" [canDeselectAll]="true" [multiValue]="selectedModel?.outputColumns" label="Output Columns" name="outputColumns" [control]="editModel.get('outputColumns')" [options]="objectKeys(selectedModelDataset(selectedModel).data[0])" multiple="true"></app-ui-select>
                     <app-ui-select [value]="selectedModel?.one_hot_encode_output" label="One Hot Encode Output?" name="one_hot_encode_output" [control]="editModel.get('one_hot_encode_output')" [options]="[true, false]"></app-ui-select>
                     <app-ui-select [value]="modelHasEstimator(selectedModel, 'StandardScaler')" label="Scale Features?" name="StandardScaler" [control]="estimatorsFormGroup.get('StandardScaler')" [options]="[true, false]"></app-ui-select>  
                   </div>
