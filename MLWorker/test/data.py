@@ -1,5 +1,7 @@
 """Test data for unit tests"""
 
+LARGE_DATASET_ID = "5ac258a1e6b0444924a5821d"
+
 TEST_EVALUATION = {
     "status": "NEW"
 }
@@ -74,6 +76,81 @@ TEST_MODEL={
     "field7",
     "field8"
   ]
+}
+MNIST_TEST_MODEL={
+  "name": "Test Mnist",
+  "modelType": "Classification",
+  "optimizer": "Adam",
+  "metrics": "accuracy",
+  "loss": "categorical_crossentropy",
+  "batch_size": "256",
+  "epochs": "2",
+  "layers": [
+    {
+      "layerType": "Dense",
+      "arguments": {
+        "bias_constraint": "NONE",
+        "kernel_constraint": "NONE",
+        "activity_regularizer": "NONE",
+        "bias_regularizer": "NONE",
+        "kernel_regularizer": "NONE",
+        "bias_initializer": "NONE",
+        "kernel_initializer": "NONE",
+        "use_bias": "false",
+        "activation": "relu",
+        "units": "512",
+        "modelType": "Dense"
+      },
+    },
+    {
+      "layerType": "Dense",
+      "arguments": {
+        "bias_constraint": "NONE",
+        "kernel_constraint": "NONE",
+        "activity_regularizer": "NONE",
+        "bias_regularizer": "NONE",
+        "kernel_regularizer": "NONE",
+        "bias_initializer": "NONE",
+        "kernel_initializer": "NONE",
+        "use_bias": "false",
+        "activation": "relu",
+        "units": "512",
+        "modelType": "Dense"
+      },
+    },
+    {
+      "layerType": "Dense",
+      "arguments": {
+        "bias_constraint": "NONE",
+        "kernel_constraint": "NONE",
+        "activity_regularizer": "NONE",
+        "bias_regularizer": "NONE",
+        "kernel_regularizer": "NONE",
+        "bias_initializer": "NONE",
+        "kernel_initializer": "NONE",
+        "use_bias": "false",
+        "activation": "softmax",
+        "units": "10",
+        "modelType": "Dense"
+      },
+    }
+  ],
+  "inputColumns": ['pixel'+str(i+1) for i in range(783)],
+  "outputColumns": [
+    "label"
+  ],
+  "estimators": [
+    {
+        "name": "StandardScaler",
+        # "name": "Normalizer"
+    }
+  ],
+  "cross_validation": {
+    "shuffle": True, 
+    "n_splits": 2,
+    "validator": "KFold"
+  },
+  "one_hot_encode_output": True
 }
 TEST_MODEL_IRIS={
   "name": "Test Iris",

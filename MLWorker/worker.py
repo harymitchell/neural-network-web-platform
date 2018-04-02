@@ -34,8 +34,7 @@ class Worker (object):
         self.evaluation = self.evaluation_service.retrieveOpenEvaluation()
         if self.evaluation:
             self.process_current_evaluation()
-        # else:
-        #     print ("No open evaluations found!")
+        
             
     def process_current_evaluation(self):
         """Process the current evaluation"""

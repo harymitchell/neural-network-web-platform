@@ -4,7 +4,9 @@ import pandas
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 from settings import TEST_MONGO_HOST, TEST_MONGO_PORT, TEST_MONGO_USERNAME, TEST_MONGO_PASSWORD
+import gridfs
 import pprint
+import StringIO
 
 class dataset_service (object):
     """Service which connects to Datasets via MongoDB"""
@@ -15,6 +17,7 @@ class dataset_service (object):
         else:
             self.client = MongoClient(mongo_uri)
         self.db = self.client[db]
+        self.fs = gridfs.GridFS(self.db)
 
     def retrieveAllDatasets(self):
         """Returns all datasets for worker"""
@@ -30,6 +33,8 @@ class dataset_service (object):
         #     identifier = identifier['_id']
         # print (identifier)
         result = self.db.datasets.find_one({'_id': ObjectId(identifier)})
+        if result.get('useGridFile') and result.get('gridFile_id'):
+            result['data'] = self.fileToDF(result)
         return result
 
     def removeDataset(self, filter):
@@ -45,6 +50,15 @@ class dataset_service (object):
     def insertDataset(self, dataset):
         """Inserts the given dataset"""
         return self.db.datasets.insert(dataset)
+        
+    def fileToDF(self, dataset):
+        """Returns a pandas dataframe containing the data from gridFile_id"""
+        exists = self.fs.exists(dataset.get('gridFile_id'))
+        if exists:
+            file = self.fs.get(dataset.get('gridFile_id')) # names=None if dataset['hasHeaders'] == True else ['field'+str(i+1) for i in range(len(dataset['data'][0].items()))]
+            df = pandas.read_csv(file)
+            return df
+        return dataset.get('data')
         
     def dataToNumpy(self, data):
         """Takes array of dict and returns numpy array

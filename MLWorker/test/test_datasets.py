@@ -5,7 +5,8 @@ To run: python -m unittest -v test.test_datasets
 import unittest
 from dataset_service import dataset_service
 from settings import TEST_MONGO_HOST, TEST_MONGO_PORT, TEST_MONGO_USERNAME, TEST_MONGO_PASSWORD, TEST_MONGO_DBNAME
-from data import TEST_DATASET
+from data import TEST_DATASET, LARGE_DATASET_ID
+import pandas
 
 class TestDatasetsMethods(unittest.TestCase):
 
@@ -30,6 +31,13 @@ class TestDatasetsMethods(unittest.TestCase):
         # print (np_arr[0][0].dtype)
         self.dataset_service.removeDataset({'name': 'Test Pima'})
         
+    def test_large_dataset(self):
+        """Test a dataset that uses gridfs
+            python -m unittest -v test.test_datasets.TestDatasetsMethods.test_large_dataset"""
+        d = self.dataset_service.getDatasetByID(LARGE_DATASET_ID)
+        self.assertTrue(d is not None, 'large dataset retrieved')
+        self.assertEqual(d['name'], 'mnist mini')
+        self.assertTrue(isinstance(d['data'], pandas.DataFrame))
         
     def tearDown(self):
         for d in self.created_datasets:

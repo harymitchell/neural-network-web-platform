@@ -12,7 +12,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import LabelEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import Normalizer
 
 import numpy
 numpy.random.seed(7)
@@ -42,6 +42,8 @@ class KerasEvaluator():
     
     def build_and_evaluate_new_model(self):
         self.initializeData()
+        print self.X.shape
+        print self.Y.shape
         if ('cross_validation' in self.model_spec and self.kFoldFunction(self.model_spec['cross_validation']['validator'])):
             # Use scikit_learn for cross validation
             print ('Using scikit_learn')
@@ -107,6 +109,8 @@ class KerasEvaluator():
             return None
         elif estimator_spec["name"] == "StandardScaler":
             return (estimator_spec["name"], StandardScaler())
+        elif estimator_spec["name"] == "Normalizer":
+            return (estimator_spec["name"], Normalizer())
         else:
             return None
     
@@ -125,25 +129,12 @@ class KerasEvaluator():
               ],
               "inputColumns": [
                 "field1",
-                "field2",
-                "field3",
-                "field4",
-                "field5",
-                "field6",
-                "field7",
-                "field8"
+                ...
               ]}
             dataset{
               "data": [{
                 "field1": "6",
-                "field2": "148",
-                "field3": "72",
-                "field4": "35",
-                "field5": "0",
-                "field6": "33.6",
-                "field7": "0.627",
-                "field8": "50",
-                "field9": "1"
+                ...
                },
         
             df = pandas.DataFrame(data)

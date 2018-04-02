@@ -8,8 +8,11 @@ app = Flask(__name__)
  
 @app.route("/")
 def hello():
-    return "Hello World!"
- 
+    return "404 not found"
+    
+@app.route("/deploy")
+def deploy():
+    return "404 not found"
  
 def runWorker():
     mongo_uri = os.environ.get('MONGOLAB_URI', "mongodb://{username}:{password}@{host}:{port}/{database}".format(
