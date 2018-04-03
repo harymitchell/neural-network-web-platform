@@ -82,9 +82,9 @@ app.use(session({
 
 app.disable("x-powered-by");
 
-app.use(json());
+app.use(json({limit: '50mb'}));
 app.use(compression());
-app.use(urlencoded({ extended: true }));
+app.use(urlencoded({ extended: true, limit: '50mb' }));
 
 // api routes
 app.use("/api/secure", protectedRouter);
