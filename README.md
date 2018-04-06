@@ -1,58 +1,31 @@
-<img width="150" src="https://i.cloudup.com/zfY6lL7eFa-3000x3000.png" />
-<img width="50" src="https://angular.io/assets/images/logos/angular/angular.svg" />
+# Platform for building and testing artificial neural networks
 
-## Angular2+ Express Starter ( Advanced )
+Web-based platform for building, testing, and analyzing results of artificial neural networks for machine learning projects
 
-- Angular 2+ ( 4.x )
-- ExpressJS ( 4.x - with compression )
-- Webpack ( angular-cli )
+## Overview
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+The system provides a complete platform for building and testing artificial neural networks, without the need to write any code. The only requirement is for the user to understand the data and network models conceptually.  The system builds an abstract specification for training and testing an artificial neural network, and then executed the specification using Keras, Scikit-learn and TensorFlow. As the user further interacts with the interface and tunes hyperparameters and network structure, the accuracy of the model changes. The system keeps track of the accuracy at each evaluation point and displays the statistics graphically.
 
-## Concepts
+## Built with
 
-- Redux ( NgRx/Store - with server calls)
-- Smart & dumb components
-- AOT: Ahead-of-Time compilation
-- Advanced routing ( lazy loading, router outlets...)
+- Keras
+- TensorFlow
+- Scikit-learn
+- Node.js + Angular2 + TypeScript (https://github.com/vladotesanovic/angular2-express-starter)
+- MongoDB
 
 ## Install / Development
 
 ```bash
-git clone https://github.com/vladotesanovic/angular2-express-starter
-cd angular2-express-starter
+git clone https://github.com/harymitchell/mscs-ml
+cd mscs-ml
 
 # Install dependencies
 npm install
 
-# start server
-npm run start
+# start dev server
+npm run-script start_dev
 
 # Client url: http://localhost:4200
 # Application ( epxress ) API: http://localhost:4300
 ```
-
-Install Redux DevTools chrome extenstion:
-
-https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd
-
-## Build / Production
-
-```bash
-
-npm run build
-
-## Deploy dist folder to app server
-
-Structure of dist folder:
-
-/dist/server <-- expressjs
-/dist/client <-- angular2
-
-```
-
-## Note
-
-All html and css are from: http://www.w3schools.com/howto/
-
-
