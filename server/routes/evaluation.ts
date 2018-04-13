@@ -127,30 +127,30 @@ evaluationRouter.delete("/:id", (request: Request, response: Response) => {
 /**
  * Evaluate Deploy by id
  */
-evaluationRouter.post("/evaluate/:id", (request: Request, response: Response) => {
+// evaluationRouter.post("/evaluate/:id", (request: Request, response: Response) => {
 
-  Evaluation.findOne({_id: request.params.id}).populate('user').exec((err, evaluation) => {
-    if (err || !evaluation) {
-      console.error(err || "Not found.");
-      return response.status(404).send("Not found :(");
-    };
+//   Evaluation.findOne({_id: request.params.id}).populate('user').exec((err, evaluation) => {
+//     if (err || !evaluation) {
+//       console.error(err || "Not found.");
+//       return response.status(404).send("Not found :(");
+//     };
 
-    if (!evaluation.serviceURL){
-      console.error(err || "No serviceURL found.");
-      return response.status(404).send("No serviceURL found :(");
-    }
-    // Proxy request
-    requestLib
-        .post({url: evaluation.serviceURL, data: request.body})
-        .on('response', function(response) {
-            response.json(response);
-        })
-        .on('error', function(response) {
-            console.log("proxy call failed",response.statusCode);
-            response.status(500).send("Proxy call failed :(");
-        });
-  });
+//     if (!evaluation.serviceURL){
+//       console.error(err || "No serviceURL found.");
+//       return response.status(404).send("No serviceURL found :(");
+//     }
+//     // Proxy request
+//     requestLib
+//         .post({url: evaluation.serviceURL, data: request.body})
+//         .on('response', function(response) {
+//             response.json(response);
+//         })
+//         .on('error', function(response) {
+//             console.log("proxy call failed",response.statusCode);
+//             response.status(500).send("Proxy call failed :(");
+//         });
+//   });
   
-});
+// });
 
 export { evaluationRouter };

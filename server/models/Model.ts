@@ -32,6 +32,10 @@ const modelSchema = new mongoose.Schema({
     ],
     evaluations: [{type: mongoose.Schema.Types.ObjectId, ref: "Evaluation"}],
     isHistorical: Boolean,
+    deployRequested: Boolean,
+    deployID: String,
+    pathToHDF5: Object,
+    serviceURL: String,
 }, { timestamps: true });
 
 const Model = mongoose.model("Model", modelSchema);

@@ -9,10 +9,6 @@ const evaluationSchema = new mongoose.Schema({
     history: {},
     metrics: {},
     worker: String,
-    deployRequested: Boolean,
-    deployID: String,
-    pathToHDF5: Object,
-    serviceURL: String,
 }, { timestamps: true });
 
 const Evaluation = mongoose.model("Evaluation", evaluationSchema);

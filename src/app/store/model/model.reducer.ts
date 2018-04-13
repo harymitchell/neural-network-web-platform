@@ -36,6 +36,8 @@ export class IModel {
   evaluations: [IEvaluation];
   updatedAt: Date;
   isHistorical: Boolean;
+  deployRequested: Boolean;
+  deployID: String;
 }
 
 export class IModelLayer {

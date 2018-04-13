@@ -16,8 +16,6 @@ export class IEvaluation {
   scores: number[];
   createdAt: Date;
   updatedAt: Date;
-  deployRequested: Boolean;
-  deployID: String;
 }
 
 

@@ -3,11 +3,15 @@ import { Request } from "../app";
 import { Model } from "../models/Model";
 import { userValidator } from "./validator";
 
+import requestLib = require("request");
+
 import { Response, Router } from "express";
 
 import formidable = require("formidable");
 import fs = require("fs");
 import csv =require("csvtojson");
+
+const url = require('url');
 
 const modelRouter: Router = Router();
 
@@ -120,5 +124,107 @@ modelRouter.delete("/:id", (request: Request, response: Response) => {
   });
 
 });
+
+
+/**
+ * Evaluate Deploy by id
+ */
+modelRouter.post("/deploy/:id", (request: Request, response: Response) => {
+
+  Model.findOne({_id: request.params.id}).populate('user').exec((err, model) => {
+    if (err || !model) {
+      console.error(err || "Not found.");
+      return response.status(404).send("Not found :(");
+    }
+
+    if (!model.serviceURL){
+      console.error(err || "No serviceURL found.");
+      return response.status(404).send("No serviceURL found :(");
+    }
+
+    console.log ("data",request.body, "model", model._id);
+
+    let json;
+    if (request.body.json) {
+      console.log ('json body');
+      json = request.body.json;
+      return proxyPrediction(request, response, json, model);
+    } else if (request.body.csv){
+      console.log ('csv body');
+      json = []
+      csv({
+        flatKeys: false,
+      }).fromString(request.body.csv)
+        .on('json',(jsonObj, rowIndex)=>{
+          json.push(flattenObject(jsonObj));
+        })
+        .on('done',() => {
+          console.log ("done parsing csv");
+          return proxyPrediction(request, response, json, model);
+        })
+        .on('error',err =>{
+          return response.status(500).send('error parsing csv');
+        });
+    } else {
+      console.error("invalid type");
+      return response.status(500).send("Invalid mime type");
+    }
+  });
+  
+});
+
+function proxyPrediction(request: Request, response: Response, input_data, model){
+  if (!input_data) {
+    console.log("Invalid input data",input_data)
+    return response.status(500).send("Invalid input data ");
+  }
+  const proxy = url.resolve(model.serviceURL, 'predict/' + model._id);
+  console.log ('proxying to ',proxy);
+  // Proxy request
+  requestLib
+    .post({
+      url: proxy,
+      body: {
+        input_columns: model.inputColumns,
+        input_data: input_data
+      },
+      json: true
+    }, (error, res, body) => {
+      if (error){
+        console.log("proxy call failed",res.statusCode);
+        return response.status(500).send("Proxy call failed :(");
+      }
+      console.log ("proxy prediction success", res.body);
+      response.send(res.body);
+    });
+}
+
+/**
+ * Helper to flatten object.
+ * https://gist.github.com/penguinboy/762197
+ * @param ob 
+ */
+const flattenObject = (ob) => {
+  var toReturn = {};
+
+  for (var i in ob) {
+    if (!ob.hasOwnProperty(i)){
+      continue;
+    }
+
+    if ((typeof ob[i]) == 'object') {
+      var flatObject = flattenObject(ob[i]);
+      for (var x in flatObject) {
+        if (!flatObject.hasOwnProperty(x)){
+          continue;
+        }
+        toReturn[i + "_" + x] = flatObject[x];
+      }
+    } else {
+      toReturn[i] = ob[i];
+    }
+  }
+  return toReturn;
+};
 
 export { modelRouter };

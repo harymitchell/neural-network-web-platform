@@ -8,12 +8,14 @@ import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { SelectDatasetComponent } from './selectDataset/selectDataset.component';
 import { SelectModelComponent } from './selectModel/selectModel.component';
+import { PredictionComponent } from './prediction/prediction.component';
 
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
 import { MatCardModule, MatTableModule, MatButtonModule, MatProgressSpinnerModule,
   MatSidenavModule, MatDialogModule, MatTabsModule, MatIconModule, MatSliderModule,
-  MatMenuModule, MatExpansionModule, MatSnackBarModule } from '@angular/material';
+  MatMenuModule, MatExpansionModule, MatSnackBarModule, MatSelectModule,
+  MatInputModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -33,6 +35,8 @@ import { MatCardModule, MatTableModule, MatButtonModule, MatProgressSpinnerModul
     MatMenuModule,
     MatExpansionModule,
     MatSnackBarModule,
+    MatSelectModule,
+    MatInputModule,
 
     Ng2GoogleChartsModule,
     RouterModule.forChild(routes)
@@ -40,11 +44,12 @@ import { MatCardModule, MatTableModule, MatButtonModule, MatProgressSpinnerModul
   declarations: [
     SelectDatasetComponent,
     SelectModelComponent,
-    ModelsComponent
+    ModelsComponent,
+    PredictionComponent
   ],
   bootstrap: [
     ModelsComponent,
   ],
-  entryComponents: [ SelectModelComponent ], 
+  entryComponents: [ SelectModelComponent, PredictionComponent ], 
 })
 export class ModelsModule {}

@@ -1,0 +1,25 @@
+<h1>Make Predictions</h1>
+<mat-form-field>
+  <mat-select [(value)]="contentType">
+    <mat-option value="json">JSON</mat-option>
+    <mat-option value="csv">CSV</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<br>
+
+<mat-form-field>
+  <textarea matInput placeholder="Input data..." matTextareaAutosize matAutosizeMinRows="2"
+            matAutosizeMaxRows="25" [(ngModel)]='inputData'></textarea>
+</mat-form-field>
+
+<br>
+
+<app-ui-button [disabled]="!inputData || !contentType" text="Predict" (click)="sendPrediction()"></app-ui-button>
+
+<br>
+
+<mat-form-field>
+  <textarea matInput placeholder="Output" matTextareaAutosize matAutosizeMinRows="2"
+            matAutosizeMaxRows="25" [(ngModel)]='output'></textarea>
+</mat-form-field>

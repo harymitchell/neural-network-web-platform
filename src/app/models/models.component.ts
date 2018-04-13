@@ -36,6 +36,7 @@ import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
 import {SelectModelComponent} from './selectModel/selectModel.component';
 import {CreateModelComponent} from '../shared/createModel/createModel.component';
 import {SelectDatasetComponent} from './selectDataset/selectDataset.component';
+import { PredictionComponent } from './prediction/prediction.component';
 import { ChartSelectEvent } from 'ng2-google-charts';
 
 /**
@@ -273,7 +274,9 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
       epochs: [],
       batch_size: [],
       cross_validation: [], // place holder
-      estimators: [], // place holder
+      estimators: [], // place holder,
+      deployRequested: [],
+      deployID: []
     });
 
     this.sliderModels$ = this.selectedModel$.map((val) => {
@@ -740,6 +743,27 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
       });
       this.reset();
     }
+  }
+
+  initiatePrediction(model: IModel){  
+    let dialogRef = this.dialog.open(PredictionComponent, {
+      data: {
+        model: model
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
+  deployModel(model: IModel){
+    console.log ('deployModel');
+    this.editModel.patchValue({deployRequested: true});
+    this.updateModel(model);
+    // this.store.dispatch({
+    //   type: MODEL_UPDATE,
+    //   payload: Object.assign({}, model, {deployRequested: true}),
+    //   _id: model._id
+    // });
   }
 
 }

@@ -2,7 +2,7 @@
     <div *ngIf="profile$ | async as currentUser; else login">
         <li *ngIf="currentUser"><a routerLink="/datasets" routerLinkActive="active">Datasets</a></li>
         <li *ngIf="currentUser"><a routerLink="/models" routerLinkActive="active">Models</a></li>
-        <li *ngIf="currentUser"><a routerLink="/profile" routerLinkActive="active">Profile</a></li>
+        <!-- <li *ngIf="currentUser"><a routerLink="/profile" routerLinkActive="active">Profile</a></li> -->
         <li *ngIf="currentUser"><a routerLink="/logout" routerLinkActive="active">Logout</a></li>
         
         <li id="currentUser" *ngIf="currentUser">{{currentUser.name}}</li>  

@@ -71,9 +71,10 @@
             <h1>Model Workspace</h1>
             <div *ngIf="(sliderModels$ | async) as models" id="dateSlider">
                 <label >Model History</label>
-                <!-- <input type="range" id="rangeControlledByDate" value="selectedModelState.sliderCurrentIndex" step="1" min="0" max="{{models.length - 1}}" (change)="onDateSliderInput($event, models)" class="slider"/> -->
                 <input type="text"  id="dateControlledByRange" value="{{dateTextForIndex(models, selectedModelState.sliderCurrentIndex)}}" disabled/>
-                <!-- <app-ui-button [disabled]="selectedModel"  text="Update Model" (click)="updateModel(selectedModel)"></app-ui-button> -->
+
+                <!-- <app-ui-button *ngIf="selectedModel.evaluations && selectedModel.evaluations.length" [disabled]="!editModel.valid || selectedModel.isHistorical" text="Deploy Model" (click)="deployModel(selectedModel)"></app-ui-button> -->
+                <app-ui-button *ngIf="selectedModel.evaluations && selectedModel.evaluations.length" text="Predict" (click)="initiatePrediction(selectedModel)"></app-ui-button>
 
                 <mat-slider
                     id="historySlider"
