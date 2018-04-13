@@ -58,6 +58,7 @@ class Worker (object):
             self.dataset = self.dataset_service.getDatasetByID(self.model['dataset'])
             self.keras_evaluator = KerasEvaluator(self.dataset, self.model, self.evaluation)#, gridfs=self.fs, model_service=self.model_service)
             evaluated_model = self.keras_evaluator.build_and_evaluate_new_model()
+            print 'model evaluated'
             self.saveModel(evaluated_model)
             if len(self.keras_evaluator.errors) > 0:
                 self.handle_errored_evaluation(self.keras_evaluator.errors)
@@ -71,16 +72,23 @@ class Worker (object):
     
     def saveModel(self, evaluated_model):
         """write back the h5 file to the DB"""
+        print 'saving model'
         if not os.path.exists(DEPLOY_DIRECTORY):
+            print 'creating deploy directory'
             os.makedirs(DEPLOY_DIRECTORY)
         model_file_name = str(self.model.get('_id'))+'.h5'
         model_full_path = os.path.join(DEPLOY_DIRECTORY, model_file_name)
+        print 'saving to file '+ model_full_path
         evaluated_model.save(model_full_path)
         try:
             # save weights to gridfs
             f = open(model_full_path, 'r')
             fileId = self.fs.put(f)
             self.model_service.updateModel(self.model, {'$set': {'serviceURL': self.serviceURL, 'pathToHDF5': model_full_path, 'deployID': fileId}})
+            print 'model updated'
+        except Exception as e:
+            print 'error saving file'
+            print e
         finally:
             f.close()
     
