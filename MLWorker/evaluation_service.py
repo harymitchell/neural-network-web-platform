@@ -72,13 +72,3 @@ class evaluation_service (object):
 #     pprint.pprint(evaluation_service.updateEvaluation(evaluation, {'$set': {'status': 'NEW'}}))
 #     evaluation_service.clearEvaluations()
 
-
-
-""" NOTES
-from pymongo import MongoClient
-client = MongoClient('mongodb://localhost:27017/')
-db = client.myapp
-for item in db.evaluations.find():
-    print item
-
-"""

@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from numpy import ma
 import pandas
@@ -6,6 +7,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasClassifier, KerasRegressor
 from keras.utils import np_utils
+from keras.models import load_model
 
 from sklearn.model_selection import StratifiedKFold, KFold
 from sklearn.model_selection import cross_val_score
@@ -18,7 +20,9 @@ import numpy
 numpy.random.seed(7)
 seed = 7
 
-class KerasEvaluator():
+from settings import DEPLOY_DIRECTORY
+
+class KerasEvaluator(object):
     """Class handles the construction of Keras models
     
         load dataset
@@ -28,7 +32,7 @@ class KerasEvaluator():
         Fit the model
         evaluate the model"""
     
-    def __init__(self, dataset, model, evaluation, FIT_VERBOSITY=1):
+    def __init__(self, dataset, model, evaluation, FIT_VERBOSITY=1, gridfs=None, model_service=None):
         """Creates a new Keras model from given dataset, model, and evaluation"""
         # print ("Creating Keras model from spec: \ndataset: {}\nmodel:{}\neval:{}".format(dataset, model, evaluation))
         self.model_spec = model
@@ -42,8 +46,30 @@ class KerasEvaluator():
     
     def build_and_evaluate_new_model(self):
         self.initializeData()
-        print self.X.shape
-        print self.Y.shape
+        
+        # setup for create_and_compile_model
+        model_spec = self.model_spec
+        models = []
+        # INTERNAL FUNCTION
+        def create_and_compile_model():
+            """Function to create and compile model, which also returns 
+            model, as required for scikit_learn build fn"""
+            model = Sequential()
+            models.append(model)
+            for idx, layer_spec in enumerate(model_spec['layers']):
+                # print ("Layer {} spec: {}".format(idx,layer_spec))
+                model.add(self.newLayerForSpec(layer_spec, idx))
+            
+            # Compiles model: self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+            args = {k: v for k, v in {
+                "optimizer": model_spec['optimizer'],
+                "metrics": [model_spec['metrics']],
+                "loss": model_spec['loss']
+                }.items() if v is not None}
+            model.compile(**args)
+            # return created model
+            return model
+            
         if ('cross_validation' in self.model_spec and self.kFoldFunction(self.model_spec['cross_validation']['validator'])):
             # Use scikit_learn for cross validation
             print ('Using scikit_learn')
@@ -60,11 +86,12 @@ class KerasEvaluator():
             # Build estimator
             estimators = self.initiaze_estimators()
             # last estimator is the keras model
-            estimators.append(('keras_model', wrapper(
-                    build_fn=self.create_and_compile_model, 
+            estimator = wrapper(
+                    build_fn=create_and_compile_model, 
                     epochs=int(self.model_spec['epochs']), 
                     batch_size=int(self.model_spec['batch_size']), 
-                    verbose=self.FIT_VERBOSITY)))
+                    verbose=self.FIT_VERBOSITY)
+            estimators.append(('keras_model', estimator))
             pipeline = Pipeline(estimators)
             kfold = self.kFoldFunction(self.model_spec['cross_validation']['validator'])(
                 n_splits=int(self.model_spec['cross_validation']['n_splits']), 
@@ -74,24 +101,21 @@ class KerasEvaluator():
                 pass # don't reshape output
             else:
                 self.Y = np.reshape(self.Y,[self.Y.shape[0],])
-                # print (self.X.shape)
-                # print (self.Y.shape)
-                # print (type(self.X.shape))
-                # print (type(self.Y.shape))
             result = cross_val_score(pipeline, self.X, self.Y, cv=kfold)
+            
+            self.fitModel(estimator)
+            self.model = estimator.model #models[0]
             self.scores = [result.mean(), result.std()]
-    	    self.model = Sequential() # for consistency
             self.model.metrics_names = [self.model_spec['metrics'], "std_deviation"]
         else:
             # No cross validation (plain keras) 
             # TODO: determine if this should be supported 
             self.create_and_compile_model()
-            self.fitModel()
+            self.fitModel(self.model)
             self.evaluateModel()
-        
-        # print (self.keras_evaluator.scores)
-        # print (self.keras_evaluator.model.metrics_names)
-        # end build_and_evaluate_new_model
+            self.model.metrics_names = self.model.metrics_names
+        return self.model
+    # end build_and_evaluate_new_model
     
     def initiaze_estimators(self):
         """Initializes list of estimators"""
@@ -187,13 +211,22 @@ class KerasEvaluator():
         """Function to create and compile self.model, which also returns 
             self.model, as required for scikit_learn build fn"""
     	# create model
-    	self.model = Sequential()
+    	model = Sequential()
+    	self.model = model
         for idx, layer_spec in enumerate(self.model_spec['layers']):
             # print ("Layer {} spec: {}".format(idx,layer_spec))
             self.model.add(self.newLayerForSpec(layer_spec, idx))
-    	self.compileModel()
-        # print (self.model.to_json())
-    	return self.model
+            
+        # Compiles model: self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+        args = {k: v for k, v in {
+          "optimizer": self.model_spec['optimizer'],
+          "metrics": [self.model_spec['metrics']],
+          "loss": self.model_spec['loss']
+        }.items() if v is not None}
+        model.compile(**args)
+        
+        # return created model
+    	return model
 
     def newLayerForSpec(self, layer_spec, idx):
         """Returns a new Keras layer for given spec"""
@@ -240,7 +273,7 @@ class KerasEvaluator():
         # self.Y = self.dataset[:,8]
         pass
     
-    def compileModel(self):
+    def compileModel(self, model):
         """Compiles model
             self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])"""
         args = {k: v for k, v in {
@@ -248,9 +281,9 @@ class KerasEvaluator():
           "metrics": [self.model_spec['metrics']],
           "loss": self.model_spec['loss']
         }.items() if v is not None}
-        self.model.compile(**args)
+        model.compile(**args)
         
-    def fitModel(self):
+    def fitModel(self, model):
         """Fits model
             self.model.fit(self.X, self.Y, epochs=150, batch_size=10)"""
         args = {k: v for k, v in {
@@ -258,7 +291,7 @@ class KerasEvaluator():
           "epochs": int(self.model_spec['epochs']),
           "verbose": self.FIT_VERBOSITY
             }.items() if v is not None}
-        self.model.fit(self.X, self.Y, **args)
+        model.fit(self.X, self.Y, **args)
         
     def evaluateModel(self):
         """Evaluates the fitted model

@@ -11,17 +11,23 @@ from settings import TEST_MONGO_HOST, TEST_MONGO_PORT, TEST_MONGO_USERNAME, TEST
 from data import TEST_MODEL, TEST_DATASET, TEST_EVALUATION, TEST_MODEL_IRIS, TEST_DATASET_IRIS, TEST_DATASET_BOSTON, TEST_MODEL_BOSTON, MNIST_TEST_MODEL, LARGE_DATASET_ID
 FIT_VERBOSITY=0
 
-class TestKerasEvaluatorMethods(unittest.TestCase):
+import gridfs
 
-    def setUp(self):
+class TestKerasEvaluatorMethods(unittest.TestCase):
+    
+    def __init__(self, *args, **kwargs):
+        super(TestKerasEvaluatorMethods, self).__init__(*args, **kwargs)
         self.mongo_uri = "mongodb://{username}:{password}@{host}:{port}/{database}".format(
                 username=TEST_MONGO_USERNAME, password=TEST_MONGO_PASSWORD, host=TEST_MONGO_HOST, port=TEST_MONGO_PORT, database=TEST_MONGO_DBNAME)
         self.evaluation_service = evaluation_service(self.mongo_uri, TEST_MONGO_DBNAME, "unit_test_worker_id")
         self.model_service = model_service(db=TEST_MONGO_DBNAME, client=self.evaluation_service.client)
         self.dataset_service = dataset_service(db=TEST_MONGO_DBNAME, client=self.evaluation_service.client)
+        self.fs = self.dataset_service.fs
+
+    def setUp(self):
         self.created_models = []
         self.created_datasets = []
-
+        
     def test_evaluate_model(self):
         dataset, model, evaluation = self.create_test_evaluation(model_spec=TEST_MODEL, dataset_spec=TEST_DATASET)
         self.keras_evaluator = KerasEvaluator(dataset, model, evaluation)
@@ -104,7 +110,10 @@ class TestKerasEvaluatorMethods(unittest.TestCase):
     
     def tearDown(self):
         self.evaluation_service.removeEvaluations()
-        for d in self.created_models:
+        for m in self.created_models:
+            model = self.model_service.getModelByID(m)
+            if model and model.get('deployID'):
+                self.fs.delete(model.get('deployID'))
             self.model_service.removeModel({'name': 'Test Mnist'})
             self.model_service.removeModel({'name': 'Test Pima'})
             self.model_service.removeModel({'name': 'Test Iris'})

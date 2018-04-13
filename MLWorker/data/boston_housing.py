@@ -7,6 +7,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
+from sklearn.externals import joblib
 
 seed = 7
 
@@ -19,8 +20,6 @@ Y = dataset[:,13]
 
 # define base model
 def baseline_model():
-	# create model
-	model = Sequential()
 	model.add(Dense(13, input_dim=13, kernel_initializer='normal', activation='relu'))
 	model.add(Dense(1, kernel_initializer='normal'))
 	# Compile model
@@ -29,8 +28,6 @@ def baseline_model():
 	
 # define the model
 def larger_model():
-	# create model
-	model = Sequential()
 	model.add(Dense(13, input_dim=13, kernel_initializer='normal', activation='relu'))
 	model.add(Dense(6, kernel_initializer='normal', activation='relu'))
 	model.add(Dense(1, kernel_initializer='normal'))
@@ -40,8 +37,6 @@ def larger_model():
 
 # define wider model
 def wider_model():
-	# create model
-	model = Sequential()
 	model.add(Dense(20, input_dim=13, kernel_initializer='random_normal', activation='relu'))
 	model.add(Dense(1, kernel_initializer='random_normal'))
 	# Compile model
@@ -60,12 +55,32 @@ numpy.random.seed(seed)
 # evaluate model with standardized dataset
 estimators = []
 estimators.append(('standardize foo', StandardScaler()))
-estimators.append(('mlp foo', KerasRegressor(build_fn=wider_model, epochs=100, batch_size=5, verbose=0)))
+estimators.append(('mlp foo', KerasRegressor(build_fn=wider_model, epochs=2, batch_size=5, verbose=0)))
 pipeline = Pipeline(estimators)
 # print (estimators)
 # print ((wider_model, 100, 5, 0))
-kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
+kfold = KFold(n_splits=2, shuffle=True, random_state=seed)
 results = cross_val_score(pipeline, X, Y, cv=kfold)
 
 print (results)
 print("Standardized: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+
+
+# serialize model to JSON
+model_json = model.to_json()
+with open("saved/model.json", "w") as json_file:
+    json_file.write(model_json)
+# serialize weights to HDF5
+model.save_weights("saved/model.h5")
+print("Saved model to disk")
+
+
+# SAVE MODEL
+# estimator.save('keras_model.h5')
+
+# # This hack allows us to save the sklearn pipeline:
+# pipeline.named_steps['keras_model'].model = None
+
+# # Finally, save the pipeline:
+# joblib.dump(estimator, 'estimator.pkl')
+# joblib.dump(pipeline, 'sklearn_pipeline.pkl')

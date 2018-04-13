@@ -1,6 +1,6 @@
 """Test data for unit tests"""
 
-LARGE_DATASET_ID = "5ac258a1e6b0444924a5821d"
+LARGE_DATASET_ID = "5ac8fb6274ce7a4298c452ac"
 
 TEST_EVALUATION = {
     "status": "NEW"
@@ -217,7 +217,7 @@ TEST_MODEL_BOSTON = {
   "metrics": "mean_squared_error",
   "loss": "mean_squared_error",
   "batch_size": 5,
-  "epochs": 100,
+  "epochs": 5,
   "layers": [
     {
       "layerType": "Dense",

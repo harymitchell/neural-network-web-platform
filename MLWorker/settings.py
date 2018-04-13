@@ -27,3 +27,4 @@ TEST_WORKER_ID = "unit_test_worker_id"
 
 SLEEP_TIME = 15
 
+DEPLOY_DIRECTORY = 'deploys'
