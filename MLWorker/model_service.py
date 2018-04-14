@@ -33,7 +33,7 @@ class model_service (object):
     def updateModel(self, model, set_obj):
         """Updates the given model"""
         return self.db.models.update_one(
-            {'_id': model["_id"]}, set_obj, 
+            {'_id': ObjectId(model["_id"])}, set_obj, 
             upsert=False)
             
     def retrieveRequestedDeploy(self):
