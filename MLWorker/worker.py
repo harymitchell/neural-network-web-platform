@@ -84,9 +84,10 @@ class Worker (object):
             # save weights to gridfs
             f = open(model_full_path, 'r')
             fileId = self.fs.put(f)
+            print {'$set': {'serviceURL': self.serviceURL, 'pathToHDF5': model_full_path, 'deployID': fileId}}
             res = self.model_service.updateModel(self.model, {'$set': {'serviceURL': self.serviceURL, 'pathToHDF5': model_full_path, 'deployID': fileId}})
             print 'model updated'
-            print res
+            print res.raw_result
         except Exception as e:
             print 'error saving file'
             print e
