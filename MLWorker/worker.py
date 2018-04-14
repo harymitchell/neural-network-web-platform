@@ -199,6 +199,7 @@ class Worker (object):
         # model.load_weights(model_full_path)
         
         model = load_model(model_full_path)
+        model._make_predict_function()
         predictions = model.predict(X)
         return predictions
 
