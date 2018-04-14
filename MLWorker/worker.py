@@ -4,6 +4,7 @@ import pandas
 import numpy as np
 from pymongo import MongoClient
 import gridfs
+from bson import ObjectId
 
 from keras_evaluator import KerasEvaluator
 from keras.models import load_model
@@ -176,7 +177,7 @@ class Worker (object):
         # json_full_path = os.path.join(DEPLOY_DIRECTORY, json_file_name)
         if not os.path.isfile(model_full_path):
             print 'loading model from gridfs'
-            model_ref = self.model_service.getModelByID(modelID)
+            model_ref = self.model_service.getModelByID(ObjectId(modelID))
             # load and save weights
             grid_out = self.fs.get(model_ref.get('deployID'))
             f = open(model_full_path, 'w')
