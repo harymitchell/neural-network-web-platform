@@ -118,7 +118,8 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
   ];
   LAYER_TYPES: string[] = [
     'Dense',
-    'Activation'
+    'Activation',
+    'Dropout'
   ];
   LAYER_ARGUMENTS: object =  {
     'Dense' : [
@@ -167,6 +168,12 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         name: 'activation',
         type: this.ACTIVATIONS
+      }
+    ],
+    'Dropout': [
+      {
+        name: 'dropout',
+        type: 1
       }
     ]
   };
@@ -576,6 +583,7 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
       'modelType': [null],
       'units': [layer.arguments['units'] || 0],
       'activation': [null],
+      'dropout': [null],
       'use_bias' : [null],
       'kernel_initializer': [''],
       'bias_initializer': [''],
