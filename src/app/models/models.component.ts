@@ -629,6 +629,7 @@ export class ModelsComponent implements OnInit, OnDestroy, AfterViewInit {
       arguments: {
         'units': 1,
         'activation': 'linear',
+        'dropout': .1,
         'use_bias' : true,
         'kernel_initializer': "NONE",
         'bias_initializer': "NONE",
