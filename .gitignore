@@ -1,3 +1,5 @@
+*.~c9*
+*.jpeg
 *.h5
 mnist_*.csv
 

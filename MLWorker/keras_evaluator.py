@@ -4,7 +4,7 @@ from numpy import ma
 import pandas
 
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Activation, Dropout
 from keras.wrappers.scikit_learn import KerasClassifier, KerasRegressor
 from keras.utils import np_utils
 from keras.models import load_model
@@ -247,6 +247,10 @@ class KerasEvaluator(object):
             # print (final_args)
             # print (int(KerasEvaluator.safe_layer_argument(arguments, 'units', 'int')))
             return Dense(int(KerasEvaluator.safe_layer_argument(arguments, 'units', 'int')), **final_args)
+        elif layer_spec['layerType'] == "Activation":
+            return Activation(KerasEvaluator.safe_layer_argument(arguments, 'activation', None))
+        elif layer_spec['layerType'] == "Dropout":
+            return Dropout(KerasEvaluator.safe_layer_argument(arguments, 'dropout', float))
         else:
             raise Exception('Unsupported Layer Type: {}'.format(layer_spec['layerType']))
     

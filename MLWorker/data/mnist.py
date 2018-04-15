@@ -14,39 +14,19 @@ from keras.optimizers import RMSprop
 
 batch_size = 128
 num_classes = 10
-epochs = 1
+epochs = 20
 
 # the data, split between train and test sets
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
-
-from sklearn.preprocessing import StandardScaler
-# scaler = StandardScaler()
-# print(scaler.fit_transform(x_train[0]))
-
-print (x_train.shape)
-print (y_train.shape)
-print (x_test.shape)
-print (y_test.shape)
-
-# FROM https://github.com/keras-team/keras/blob/master/examples/mnist_mlp.py
 
 x_train = x_train.reshape(60000, 784)
 x_test = x_test.reshape(10000, 784)
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
-print (x_train[0])
-# x_train /= 255
-# x_test /= 255
+x_train /= 255
+x_test /= 255
 print(x_train.shape[0], 'train samples')
 print(x_test.shape[0], 'test samples')
-
-print (x_train[0])
-print (x_train.shape)
-print (y_train.shape)
-print (x_test.shape)
-print (y_test.shape)
-
-# process.exit()
 
 # convert class vectors to binary class matrices
 y_train = keras.utils.to_categorical(y_train, num_classes)
@@ -59,7 +39,7 @@ model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(num_classes, activation='softmax'))
 
-# model.summary()
+model.summary()
 
 model.compile(loss='categorical_crossentropy',
               optimizer=RMSprop(),
