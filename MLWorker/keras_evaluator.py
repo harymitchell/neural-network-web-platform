@@ -230,8 +230,8 @@ class KerasEvaluator(object):
 
     def newLayerForSpec(self, layer_spec, idx):
         """Returns a new Keras layer for given spec"""
+        arguments = layer_spec['arguments']
         if layer_spec['layerType'] == "Dense":
-            arguments = layer_spec['arguments']
             final_args = {k: v for k, v in {
                 'input_dim': len(self.model_spec['inputColumns']) if idx == 0 else None, 
                 'bias_constraint': KerasEvaluator.safe_layer_argument(arguments, 'bias_constraint', None), 
@@ -250,7 +250,7 @@ class KerasEvaluator(object):
         elif layer_spec['layerType'] == "Activation":
             return Activation(KerasEvaluator.safe_layer_argument(arguments, 'activation', None))
         elif layer_spec['layerType'] == "Dropout":
-            return Dropout(KerasEvaluator.safe_layer_argument(arguments, 'dropout', float))
+            return Dropout(KerasEvaluator.safe_layer_argument(arguments, 'dropout', 'float'))
         else:
             raise Exception('Unsupported Layer Type: {}'.format(layer_spec['layerType']))
     
