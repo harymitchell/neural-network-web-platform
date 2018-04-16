@@ -19,7 +19,7 @@ import { IAppState } from '../store';
 
 import { MatSnackBar } from '@angular/material';
 
-const MAX_FILE_SIZE = 50;
+const MAX_FILE_SIZE = 100;
 
 @Component({
   selector: 'app-datasets',
