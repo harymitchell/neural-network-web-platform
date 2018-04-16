@@ -8,6 +8,8 @@ from bson import ObjectId
 
 from keras_evaluator import KerasEvaluator
 from keras.models import load_model
+from keras import backend as K
+
 from sklearn.externals import joblib
 from evaluation_service import evaluation_service
 from model_service import model_service
@@ -46,7 +48,9 @@ class Worker (object):
         """Attempt to retrieve a single open evaluation"""
         self.evaluation = self.evaluation_service.retrieveOpenEvaluation()
         if self.evaluation:
-            self.process_current_evaluation()
+            graph = K.get_session().graph
+            with graph.as_default():
+                self.process_current_evaluation()
         # self.deploy = self.model_service.retrieveRequestedDeploy()
         # if self.deploy:
         #     print (self.deploy)
@@ -199,10 +203,12 @@ class Worker (object):
         # # load weights into new model
         # model.load_weights(model_full_path)
         
-        model = load_model(model_full_path)
-        model._make_predict_function()
-        predictions = model.predict(X)
-        return predictions
+        graph = K.get_session().graph
+        with graph.as_default():
+            model = load_model(model_full_path)
+            model._make_predict_function()
+            predictions = model.predict(X)
+            return predictions
 
             
 if __name__ == '__main__':
