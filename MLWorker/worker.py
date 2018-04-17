@@ -42,8 +42,9 @@ class Worker (object):
         while True:
             if in_q:
                 try:
-                    modelID, input_data, input_columns = in_q.get(block=False)
-                    if modelID and input_data and input_columns:
+                    got = in_q.get(block=False)
+                    if got and len(got) == 3:
+                        modelID, input_data, input_columns = got
                         prediction = self.predictFromModel(modelID, input_data, input_columns)
                         out_q.put({'prediction': prediction})
                 except Queue.Empty:
