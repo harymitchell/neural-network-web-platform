@@ -5,11 +5,10 @@ import numpy as np
 from pymongo import MongoClient
 import gridfs
 from bson import ObjectId
+import Queue
 
 from keras_evaluator import KerasEvaluator
 from keras.models import load_model
-from keras import backend as K
-
 from sklearn.externals import joblib
 from evaluation_service import evaluation_service
 from model_service import model_service
@@ -37,10 +36,21 @@ class Worker (object):
         self.db = self.client[db]
         self.fs = gridfs.GridFS(self.db)
     
-    def run(self):
+    def run(self, in_q=None, out_q=None):
         """Run application"""
         print ("starting worker node")
         while True:
+            if in_q:
+                try:
+                    modelID, input_data, input_columns = in_q.get(block=False)
+                    if modelID and input_data and input_columns:
+                        prediction = self.predictFromModel(modelID, input_data, input_columns)
+                        out_q.put({'prediction': prediction})
+                except Queue.Empty:
+                    pass
+                except Exception as e:
+                    traceback.print_exc()
+                    out_q.put({'error': e})
             self.run_once()
             time.sleep(SLEEP_TIME)
         
@@ -48,12 +58,7 @@ class Worker (object):
         """Attempt to retrieve a single open evaluation"""
         self.evaluation = self.evaluation_service.retrieveOpenEvaluation()
         if self.evaluation:
-            graph = K.get_session().graph
-            with graph.as_default():
-                self.process_current_evaluation()
-        # self.deploy = self.model_service.retrieveRequestedDeploy()
-        # if self.deploy:
-        #     print (self.deploy)
+            self.process_current_evaluation()
             
     def process_current_evaluation(self):
         """Process the current evaluation"""
@@ -203,12 +208,10 @@ class Worker (object):
         # # load weights into new model
         # model.load_weights(model_full_path)
         
-        graph = K.get_session().graph
-        with graph.as_default():
-            model = load_model(model_full_path)
-            model._make_predict_function()
-            predictions = model.predict(X)
-            return predictions
+        model = load_model(model_full_path)
+        # model._make_predict_function()
+        predictions = model.predict(X)
+        return predictions
 
             
 if __name__ == '__main__':
