@@ -20,12 +20,12 @@ mongo_uri = os.environ.get('MONGOLAB_URI', "mongodb://{username}:{password}@{hos
         
 @app.route("/")
 def hello():
-    in_queue.put(({'message':'hello'}, 333))
-    while True:
-        got = out_queue.get()
-        if got:
-            print got
-            break
+    # in_queue.put(({'message':'hello'}, 333))
+    # while True:
+    #     got = out_queue.get()
+    #     if got:
+    #         print got
+    #         break
     return "404 not found"
     
 @app.route("/predict/<modelID>", methods=['POST'])
