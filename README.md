@@ -29,3 +29,7 @@ npm run-script start_dev
 # Client url: http://localhost:4200
 # Application ( epxress ) API: http://localhost:4300
 ```
+
+## Learn More
+
+- White Paper and presentation: https://drive.google.com/drive/folders/1TzlAKAXlLQD2igVTPDif-F1RCpVbkfMg?usp=sharing
